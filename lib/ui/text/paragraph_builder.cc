@@ -26,6 +26,7 @@
 #include "third_party/tonic/dart_binding_macros.h"
 #include "third_party/tonic/dart_library_natives.h"
 #include "third_party/tonic/typed_data/dart_byte_data.h"
+#include "flutter/lib/ui/platform_dispatcher.h"
 
 namespace flutter {
 namespace {
@@ -221,6 +222,32 @@ void decodeStrut(Dart_Handle strut_data,
     paragraph_style.strut_font_families.push_back("");
   }
 }
+
+//TODO
+ParagraphBuilder::ParagraphBuilder(const std::vector<int32_t>& encoded) {
+  int32_t mask = 0;
+  txt::ParagraphStyle style;
+  {
+    mask = encoded[0];
+
+    if (mask & kPSTextDirectionMask) {
+      style.text_direction =
+          static_cast<txt::TextDirection>(encoded[kPSTextDirectionIndex]);
+      std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",ParagraphBuilder::ParagraphBuilder" << std::endl;
+    }
+  }
+
+  auto cfg = keels::PlatformDispatcher::instance().GetPlatformConfiguration();
+  FontCollection& font_collection = cfg->client()->GetFontCollection();
+
+  //TODO
+  auto impeller_enabled = false;
+
+  m_paragraph_builder_ = txt::ParagraphBuilder::CreateSkiaBuilder(
+      style, font_collection.GetFontCollection(), impeller_enabled);
+
+}
+
 
 ParagraphBuilder::ParagraphBuilder(
     Dart_Handle encoded_data,
@@ -496,6 +523,24 @@ void ParagraphBuilder::pop() {
   m_paragraph_builder_->Pop();
 }
 
+//TODO, return error code
+int32_t ParagraphBuilder::addText2(const std::u16string& text) {
+  if(text.empty()){
+    return 0;
+  }
+  const UChar* text_ptr = reinterpret_cast<const UChar*>(text.data());
+  UErrorCode error_code = U_ZERO_ERROR;
+  u_strToUTF8(nullptr, 0, nullptr, text_ptr, text.size(), &error_code);
+  if (error_code != U_BUFFER_OVERFLOW_ERROR) {
+    return -1;
+  }
+
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",ParagraphBuilder::addText2" << std::endl;
+
+  m_paragraph_builder_->AddText(text);
+  return 0;
+}
+
 Dart_Handle ParagraphBuilder::addText(const std::u16string& text) {
   if (text.empty()) {
     return Dart_Null();
@@ -526,6 +571,13 @@ void ParagraphBuilder::addPlaceholder(double width,
       static_cast<txt::TextBaseline>(baseline), baseline_offset);
 
   m_paragraph_builder_->AddPlaceholder(placeholder_run);
+}
+
+fml::RefPtr<Paragraph> ParagraphBuilder::build2() {
+  auto paragraph = fml::MakeRefCounted<Paragraph>(m_paragraph_builder_->Build());
+  m_paragraph_builder_.reset();
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",ParagraphBuilder::build2" << std::endl;
+  return paragraph;
 }
 
 void ParagraphBuilder::build(Dart_Handle paragraph_handle) {

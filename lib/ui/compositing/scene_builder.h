@@ -42,6 +42,10 @@ class SceneBuilder : public RefCountedDartWrappable<SceneBuilder> {
     tonic::Float64List matrix4(matrix4_handle);
     pushTransform(layer_handle, matrix4, oldLayer);
   }
+
+  fml::RefPtr<EngineLayer> pushTransform2(const SkM44 &sk_matrix,
+                     const fml::RefPtr<EngineLayer>& oldLayer=nullptr);
+
   void pushTransform(Dart_Handle layer_handle,
                      tonic::Float64List& matrix4,
                      const fml::RefPtr<EngineLayer>& oldLayer);
@@ -49,6 +53,14 @@ class SceneBuilder : public RefCountedDartWrappable<SceneBuilder> {
                   double dx,
                   double dy,
                   const fml::RefPtr<EngineLayer>& oldLayer);
+
+  fml::RefPtr<EngineLayer> pushClipRect2(double left,
+                    double right,
+                    double top,
+                    double bottom,
+                    flutter::Clip clipBehavior,
+                    const fml::RefPtr<EngineLayer>& oldLayer=nullptr);
+
   void pushClipRect(Dart_Handle layer_handle,
                     double left,
                     double right,
@@ -121,6 +133,7 @@ class SceneBuilder : public RefCountedDartWrappable<SceneBuilder> {
   void setCheckerboardRasterCacheImages(bool checkerboard);
   void setCheckerboardOffscreenLayers(bool checkerboard);
 
+  fml::RefPtr<Scene> build2();
   void build(Dart_Handle scene_handle);
 
   const std::vector<std::shared_ptr<ContainerLayer>>& layer_stack() {
