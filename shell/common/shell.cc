@@ -9,6 +9,8 @@
 #include <sstream>
 #include <utility>
 #include <vector>
+#include <iostream>
+#include <thread>
 
 #include "flutter/assets/directory_asset_bundle.h"
 #include "flutter/common/constants.h"
@@ -671,23 +673,37 @@ void Shell::RunEngine(
   FML_DCHECK(task_runners_.GetPlatformTaskRunner()->RunsTasksOnCurrentThread());
 
   fml::TaskRunner::RunNowOrPostTask(
-      task_runners_.GetUITaskRunner(),
-      fml::MakeCopyable(
-          [run_configuration = std::move(run_configuration),
-           weak_engine = weak_engine_, result]() mutable {
-            if (!weak_engine) {
-              FML_LOG(ERROR)
-                  << "Could not launch engine with configuration - no engine.";
-              result(Engine::RunStatus::Failure);
-              return;
-            }
-            auto run_result = weak_engine->Run(std::move(run_configuration));
-            if (run_result == flutter::Engine::RunStatus::Failure) {
-              FML_LOG(ERROR) << "Could not launch engine with configuration.";
-            }
+    task_runners_.GetUITaskRunner(),
+    fml::MakeCopyable(
+      [run_configuration = std::move(run_configuration),
+       weak_engine = weak_engine_, result, this]() mutable {
+        this->CJStartup(std::move(run_configuration), weak_engine, result);
+      }));
 
-            result(run_result);
-          }));
+  // fml::TaskRunner::RunNowOrPostTask(
+  //     task_runners_.GetUITaskRunner(),
+  //     fml::MakeCopyable(
+  //         [run_configuration = std::move(run_configuration),
+  //          weak_engine = weak_engine_, result]() mutable {
+  //           if (!weak_engine) {
+  //             FML_LOG(ERROR)
+  //                 << "Could not launch engine with configuration - no engine.";
+  //             result(Engine::RunStatus::Failure);
+  //             return;
+  //           }
+  //           auto run_result = weak_engine->Run(std::move(run_configuration));
+  //           if (run_result == flutter::Engine::RunStatus::Failure) {
+  //             FML_LOG(ERROR) << "Could not launch engine with configuration.";
+  //           }
+
+  //           result(run_result);
+  //         }));
+}
+
+void Shell::CJStartup(RunConfiguration &&run_configuration,
+                    fml::WeakPtr<Engine> weak_engine,
+                    const std::function<void(Engine::RunStatus)> &result) {
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id()  << ",======================== CJEntry ======================" << std::endl;
 }
 
 std::optional<DartErrorCode> Shell::GetUIIsolateLastError() const {

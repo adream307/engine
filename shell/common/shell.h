@@ -219,6 +219,10 @@ class Shell final : public PlatformView::Delegate,
   void RunEngine(RunConfiguration run_configuration,
                  const std::function<void(Engine::RunStatus)>& result_callback);
 
+  void CJStartup(RunConfiguration &&run_configuration,
+                 fml::WeakPtr<Engine> weak_engine,
+                 const std::function<void(Engine::RunStatus)> &result);
+
   //------------------------------------------------------------------------------
   /// @return     The settings used to launch this shell.
   ///
