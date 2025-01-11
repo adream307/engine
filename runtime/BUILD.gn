@@ -52,6 +52,8 @@ source_set("dart_plugin_registrant") {
 
 source_set("runtime") {
   sources = [
+    "capsule.cc",
+    "capsule.h",
     "dart_isolate.cc",
     "dart_isolate.h",
     "dart_isolate_group_data.cc",

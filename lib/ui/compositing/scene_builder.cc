@@ -70,6 +70,25 @@ void SceneBuilder::pushOffset(Dart_Handle layer_handle,
   }
 }
 
+fml::RefPtr<EngineLayer> SceneBuilder::pushClipRect2(double left,
+                                double right,
+                                double top,
+                                double bottom,
+                                flutter::Clip clipBehavior,
+                                const fml::RefPtr<EngineLayer>& oldLayer) {
+  SkRect clipRect = SkRect::MakeLTRB(SafeNarrow(left), SafeNarrow(top),
+                                     SafeNarrow(right), SafeNarrow(bottom));
+  auto layer = std::make_shared<flutter::ClipRectLayer>(clipRect, clipBehavior);
+  PushLayer(layer);
+  auto engine_layer = fml::MakeRefCounted<EngineLayer>(layer);
+
+  if (oldLayer && oldLayer->Layer()) {
+    layer->AssignOldLayer(oldLayer->Layer().get());
+  }
+  std::cout << __FILE__ << ":" <<__LINE__ << ":" << std::this_thread::get_id() << ",SceneBuilder::pushClipRect2" << std::endl;
+  return engine_layer;
+}
+
 void SceneBuilder::pushClipRect(Dart_Handle layer_handle,
                                 double left,
                                 double right,
@@ -208,6 +227,7 @@ void SceneBuilder::addRetained(const fml::RefPtr<EngineLayer>& retainedLayer) {
 
 void SceneBuilder::pop() {
   PopLayer();
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",SceneBuilder::PopLayer" << std::endl;
 }
 
 void SceneBuilder::addPicture(double dx,
@@ -227,6 +247,7 @@ void SceneBuilder::addPicture(double dx,
         !!(hints & 1), !!(hints & 2));
     AddLayer(std::move(layer));
   }
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",SceneBuilder::addPicture" << std::endl;
 }
 
 void SceneBuilder::addTexture(double dx,
@@ -278,6 +299,16 @@ void SceneBuilder::setCheckerboardRasterCacheImages(bool checkerboard) {
 
 void SceneBuilder::setCheckerboardOffscreenLayers(bool checkerboard) {
   checkerboard_offscreen_layers_ = checkerboard;
+}
+
+fml::RefPtr<Scene> SceneBuilder::build2() {
+  FML_DCHECK(layer_stack_.size() >= 1);
+
+  auto scene = fml::MakeRefCounted<Scene>(std::move(layer_stack_[0]), rasterizer_tracing_threshold_,
+      checkerboard_raster_cache_images_, checkerboard_offscreen_layers_);
+  layer_stack_.clear();
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",SceneBuilder::build2" << std::endl;
+  return scene;
 }
 
 void SceneBuilder::build(Dart_Handle scene_handle) {

@@ -54,6 +54,10 @@ class ParagraphBuilder : public RefCountedDartWrappable<ParagraphBuilder> {
 
   Dart_Handle addText(const std::u16string& text);
 
+  //TODO, error code
+  int32_t addText2(const std::u16string& text);
+
+
   // Pushes the information required to leave an open space, where Flutter may
   // draw a custom placeholder into.
   //
@@ -66,9 +70,13 @@ class ParagraphBuilder : public RefCountedDartWrappable<ParagraphBuilder> {
                       double baseline_offset,
                       unsigned baseline);
 
+  fml::RefPtr<Paragraph> build2();
   void build(Dart_Handle paragraph_handle);
 
  private:
+  //TODO
+  explicit ParagraphBuilder(const std::vector<int32_t>& encoded);
+
   explicit ParagraphBuilder(Dart_Handle encoded,
                             Dart_Handle strutData,
                             const std::string& fontFamily,

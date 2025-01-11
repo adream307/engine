@@ -460,6 +460,8 @@ class Engine final : public RuntimeDelegate, PointerDataDispatcher::Delegate {
   ///
   [[nodiscard]] RunStatus Run(RunConfiguration configuration);
 
+  [[nodiscard]] RunStatus RunCapsule(RunConfiguration configuration);
+
   //----------------------------------------------------------------------------
   /// @brief      Tears down an existing root isolate, reuses the components of
   ///             that isolate and attempts to launch a new isolate using the

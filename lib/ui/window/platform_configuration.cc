@@ -3,8 +3,11 @@
 // found in the LICENSE file.
 
 #include "flutter/lib/ui/window/platform_configuration.h"
+#include "flutter/lib/ui/platform_dispatcher.h"
 
 #include <cstring>
+#include <iostream>
+#include <thread>
 
 #include "flutter/common/constants.h"
 #include "flutter/lib/ui/compositing/scene.h"
@@ -36,6 +39,7 @@ PlatformConfiguration::PlatformConfiguration(
     : client_(client) {}
 
 PlatformConfiguration::~PlatformConfiguration() {}
+
 
 void PlatformConfiguration::DidCreateIsolate() {
   Dart_Handle library = Dart_LookupLibrary(tonic::ToDart("dart:ui"));
@@ -85,40 +89,43 @@ void PlatformConfiguration::DidCreateIsolate() {
 
 void PlatformConfiguration::AddView(int64_t view_id,
                                     const ViewportMetrics& view_metrics) {
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",PlatformConfiguration::AddView" << std::endl;
   auto [view_iterator, insertion_happened] =
       metrics_.emplace(view_id, view_metrics);
   FML_DCHECK(insertion_happened);
 
-  std::shared_ptr<tonic::DartState> dart_state = add_view_.dart_state().lock();
-  if (!dart_state) {
-    return;
-  }
-  tonic::DartState::Scope scope(dart_state);
-  tonic::CheckAndHandleError(tonic::DartInvoke(
-      add_view_.Get(),
-      {
-          tonic::ToDart(view_id),
-          tonic::ToDart(view_metrics.device_pixel_ratio),
-          tonic::ToDart(view_metrics.physical_width),
-          tonic::ToDart(view_metrics.physical_height),
-          tonic::ToDart(view_metrics.physical_padding_top),
-          tonic::ToDart(view_metrics.physical_padding_right),
-          tonic::ToDart(view_metrics.physical_padding_bottom),
-          tonic::ToDart(view_metrics.physical_padding_left),
-          tonic::ToDart(view_metrics.physical_view_inset_top),
-          tonic::ToDart(view_metrics.physical_view_inset_right),
-          tonic::ToDart(view_metrics.physical_view_inset_bottom),
-          tonic::ToDart(view_metrics.physical_view_inset_left),
-          tonic::ToDart(view_metrics.physical_system_gesture_inset_top),
-          tonic::ToDart(view_metrics.physical_system_gesture_inset_right),
-          tonic::ToDart(view_metrics.physical_system_gesture_inset_bottom),
-          tonic::ToDart(view_metrics.physical_system_gesture_inset_left),
-          tonic::ToDart(view_metrics.physical_touch_slop),
-          tonic::ToDart(view_metrics.physical_display_features_bounds),
-          tonic::ToDart(view_metrics.physical_display_features_type),
-          tonic::ToDart(view_metrics.physical_display_features_state),
-          tonic::ToDart(view_metrics.display_id),
-      }));
+  keels::PlatformDispatcher::instance().AddView(view_id, view_metrics);
+
+//   std::shared_ptr<tonic::DartState> dart_state = add_view_.dart_state().lock();
+//   if (!dart_state) {
+//     return;
+//   }
+//   tonic::DartState::Scope scope(dart_state);
+//   tonic::CheckAndHandleError(tonic::DartInvoke(
+//       add_view_.Get(),
+//       {
+//           tonic::ToDart(view_id),
+//           tonic::ToDart(view_metrics.device_pixel_ratio),
+//           tonic::ToDart(view_metrics.physical_width),
+//           tonic::ToDart(view_metrics.physical_height),
+//           tonic::ToDart(view_metrics.physical_padding_top),
+//           tonic::ToDart(view_metrics.physical_padding_right),
+//           tonic::ToDart(view_metrics.physical_padding_bottom),
+//           tonic::ToDart(view_metrics.physical_padding_left),
+//           tonic::ToDart(view_metrics.physical_view_inset_top),
+//           tonic::ToDart(view_metrics.physical_view_inset_right),
+//           tonic::ToDart(view_metrics.physical_view_inset_bottom),
+//           tonic::ToDart(view_metrics.physical_view_inset_left),
+//           tonic::ToDart(view_metrics.physical_system_gesture_inset_top),
+//           tonic::ToDart(view_metrics.physical_system_gesture_inset_right),
+//           tonic::ToDart(view_metrics.physical_system_gesture_inset_bottom),
+//           tonic::ToDart(view_metrics.physical_system_gesture_inset_left),
+//           tonic::ToDart(view_metrics.physical_touch_slop),
+//           tonic::ToDart(view_metrics.physical_display_features_bounds),
+//           tonic::ToDart(view_metrics.physical_display_features_type),
+//           tonic::ToDart(view_metrics.physical_display_features_state),
+//           tonic::ToDart(view_metrics.display_id),
+//       }));
 }
 
 bool PlatformConfiguration::RemoveView(int64_t view_id) {
@@ -148,6 +155,7 @@ bool PlatformConfiguration::RemoveView(int64_t view_id) {
 bool PlatformConfiguration::UpdateViewMetrics(
     int64_t view_id,
     const ViewportMetrics& view_metrics) {
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",PlatformConfiguration::UpdateViewMetrics" << std::endl;
   auto found_iter = metrics_.find(view_id);
   if (found_iter == metrics_.end()) {
     return false;
@@ -155,37 +163,39 @@ bool PlatformConfiguration::UpdateViewMetrics(
 
   found_iter->second = view_metrics;
 
-  std::shared_ptr<tonic::DartState> dart_state =
-      update_window_metrics_.dart_state().lock();
-  if (!dart_state) {
-    return false;
-  }
-  tonic::DartState::Scope scope(dart_state);
-  tonic::CheckAndHandleError(tonic::DartInvoke(
-      update_window_metrics_.Get(),
-      {
-          tonic::ToDart(view_id),
-          tonic::ToDart(view_metrics.device_pixel_ratio),
-          tonic::ToDart(view_metrics.physical_width),
-          tonic::ToDart(view_metrics.physical_height),
-          tonic::ToDart(view_metrics.physical_padding_top),
-          tonic::ToDart(view_metrics.physical_padding_right),
-          tonic::ToDart(view_metrics.physical_padding_bottom),
-          tonic::ToDart(view_metrics.physical_padding_left),
-          tonic::ToDart(view_metrics.physical_view_inset_top),
-          tonic::ToDart(view_metrics.physical_view_inset_right),
-          tonic::ToDart(view_metrics.physical_view_inset_bottom),
-          tonic::ToDart(view_metrics.physical_view_inset_left),
-          tonic::ToDart(view_metrics.physical_system_gesture_inset_top),
-          tonic::ToDart(view_metrics.physical_system_gesture_inset_right),
-          tonic::ToDart(view_metrics.physical_system_gesture_inset_bottom),
-          tonic::ToDart(view_metrics.physical_system_gesture_inset_left),
-          tonic::ToDart(view_metrics.physical_touch_slop),
-          tonic::ToDart(view_metrics.physical_display_features_bounds),
-          tonic::ToDart(view_metrics.physical_display_features_type),
-          tonic::ToDart(view_metrics.physical_display_features_state),
-          tonic::ToDart(view_metrics.display_id),
-      }));
+  keels::PlatformDispatcher::instance().UpdateViewMetrics(view_id, view_metrics);
+
+  // std::shared_ptr<tonic::DartState> dart_state =
+  //     update_window_metrics_.dart_state().lock();
+  // if (!dart_state) {
+  //   return false;
+  // }
+  // tonic::DartState::Scope scope(dart_state);
+  // tonic::CheckAndHandleError(tonic::DartInvoke(
+  //     update_window_metrics_.Get(),
+  //     {
+  //         tonic::ToDart(view_id),
+  //         tonic::ToDart(view_metrics.device_pixel_ratio),
+  //         tonic::ToDart(view_metrics.physical_width),
+  //         tonic::ToDart(view_metrics.physical_height),
+  //         tonic::ToDart(view_metrics.physical_padding_top),
+  //         tonic::ToDart(view_metrics.physical_padding_right),
+  //         tonic::ToDart(view_metrics.physical_padding_bottom),
+  //         tonic::ToDart(view_metrics.physical_padding_left),
+  //         tonic::ToDart(view_metrics.physical_view_inset_top),
+  //         tonic::ToDart(view_metrics.physical_view_inset_right),
+  //         tonic::ToDart(view_metrics.physical_view_inset_bottom),
+  //         tonic::ToDart(view_metrics.physical_view_inset_left),
+  //         tonic::ToDart(view_metrics.physical_system_gesture_inset_top),
+  //         tonic::ToDart(view_metrics.physical_system_gesture_inset_right),
+  //         tonic::ToDart(view_metrics.physical_system_gesture_inset_bottom),
+  //         tonic::ToDart(view_metrics.physical_system_gesture_inset_left),
+  //         tonic::ToDart(view_metrics.physical_touch_slop),
+  //         tonic::ToDart(view_metrics.physical_display_features_bounds),
+  //         tonic::ToDart(view_metrics.physical_display_features_type),
+  //         tonic::ToDart(view_metrics.physical_display_features_state),
+  //         tonic::ToDart(view_metrics.display_id),
+  //     }));
   return true;
 }
 
@@ -366,24 +376,34 @@ void PlatformConfiguration::DispatchSemanticsAction(int32_t node_id,
 
 void PlatformConfiguration::BeginFrame(fml::TimePoint frameTime,
                                        uint64_t frame_number) {
-  std::shared_ptr<tonic::DartState> dart_state =
-      begin_frame_.dart_state().lock();
-  if (!dart_state) {
-    return;
-  }
-  tonic::DartState::Scope scope(dart_state);
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",PlatformConfiguration::BeginFrame" << std::endl;
+  //TODO
+  // std::shared_ptr<tonic::DartState> dart_state =
+  //     begin_frame_.dart_state().lock();
+  // if (!dart_state) {
+  //   return;
+  // }
+  // tonic::DartState::Scope scope(dart_state);
 
   int64_t microseconds = (frameTime - fml::TimePoint()).ToMicroseconds();
 
-  tonic::CheckAndHandleError(
-      tonic::DartInvoke(begin_frame_.Get(), {
-                                                Dart_NewInteger(microseconds),
-                                                Dart_NewInteger(frame_number),
-                                            }));
+  auto &begin_frame = keels::PlatformDispatcher::instance().GetOnBeginFrame();
+  auto &update_frame_date = keels::PlatformDispatcher::instance().GetOnUpdateFrameData();
+  if(begin_frame) {
+    begin_frame(microseconds);
+  }
+  if(update_frame_date) {
+    update_frame_date(microseconds);
+  }
 
-  UIDartState::Current()->FlushMicrotasksNow();
+  //TODO
+  // UIDartState::Current()->FlushMicrotasksNow();
 
-  tonic::CheckAndHandleError(tonic::DartInvokeVoid(draw_frame_.Get()));
+  auto &draw_frame = keels::PlatformDispatcher::instance().GetOnDrawFrame();
+  if(draw_frame) {
+    draw_frame();
+  }
+
 }
 
 void PlatformConfiguration::ReportTimings(std::vector<int64_t> timings) {

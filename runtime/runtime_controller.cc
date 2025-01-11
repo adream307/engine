@@ -3,8 +3,11 @@
 // found in the LICENSE file.
 
 #include "flutter/runtime/runtime_controller.h"
+#include "flutter/runtime/capsule.h"
 
 #include <utility>
+#include <iostream>
+#include <thread>
 
 #include "flutter/common/constants.h"
 #include "flutter/common/settings.h"
@@ -18,6 +21,16 @@
 #include "flutter/runtime/isolate_configuration.h"
 #include "flutter/runtime/runtime_delegate.h"
 #include "third_party/tonic/dart_message_handler.h"
+#include "flutter/fml/make_copyable.h"
+#include "flutter/lib/ui/text.h"
+#include "flutter/lib/ui/platform_dispatcher.h"
+#include "flutter/lib/ui/text/paragraph_builder.h"
+#include "flutter/lib/ui/painting/picture_recorder.h"
+#include "flutter/lib/ui/painting/canvas.h"
+#include "flutter/lib/ui/floating_point.h"
+#include "flutter/lib/ui/compositing/scene_builder.h"
+#include "flutter/lib/ui/geometry.h"
+#include "flutter/lib/ui/painting.h"
 
 namespace flutter {
 
@@ -331,8 +344,10 @@ bool RuntimeController::DispatchSemanticsAction(int32_t node_id,
 
 PlatformConfiguration*
 RuntimeController::GetPlatformConfigurationIfAvailable() {
-  std::shared_ptr<DartIsolate> root_isolate = root_isolate_.lock();
-  return root_isolate ? root_isolate->platform_configuration() : nullptr;
+  auto ptr = root_capsule_.lock();
+  return ptr ? ptr->platform_configuration() : nullptr;
+  //std::shared_ptr<DartIsolate> root_isolate = root_isolate_.lock();
+  //return root_isolate ? root_isolate->platform_configuration() : nullptr;
 }
 
 // |PlatformConfigurationClient|
@@ -354,8 +369,8 @@ void RuntimeController::Render(int64_t view_id,
                                Scene* scene,
                                double width,
                                double height) {
-  const ViewportMetrics* view_metrics =
-      UIDartState::Current()->platform_configuration()->GetMetrics(view_id);
+  const ViewportMetrics* view_metrics = 
+      keels::PlatformDispatcher::instance().GetPlatformConfiguration()->GetMetrics(view_id);
   if (view_metrics == nullptr) {
     return;
   }
@@ -452,6 +467,79 @@ bool RuntimeController::HasLivePorts() {
 tonic::DartErrorHandleType RuntimeController::GetLastError() {
   std::shared_ptr<DartIsolate> root_isolate = root_isolate_.lock();
   return root_isolate ? root_isolate->GetLastError() : tonic::kNoError;
+}
+
+bool RuntimeController::LaunchCapsule(
+      const Settings& settings,
+      const fml::closure& create_callback) {
+  auto ptr = keels::Capsule::CreateRunningCapsule(settings, std::make_unique<PlatformConfiguration>(this),create_callback);
+
+  if(ptr.lock()) {
+    root_capsule_ = ptr;
+  }
+
+  if (auto* platform_configuration = GetPlatformConfigurationIfAvailable()) {
+    keels::PlatformDispatcher::instance().SetPlatformConfiguration(platform_configuration);
+    if (!FlushRuntimeStateToIsolate()) {
+      FML_DLOG(ERROR) << "Could not set up initial isolate state.";
+    }
+  } else {
+    FML_DCHECK(false) << "RuntimeController created without window binding.";
+  }
+
+  //================================= run capsule main ===================
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",======================== run capsule main =================" << std::endl;
+  auto begin_frame = fml::MakeCopyable([&](int microseconds) {
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", closure begin frame:" << microseconds << std::endl;
+
+    auto view = keels::PlatformDispatcher::instance().implicitView();
+    double devicePixelRatio = view->devicePixelRatio();
+    auto logicalSize = view->physicalSize();
+    logicalSize.width /= devicePixelRatio;
+    logicalSize.height /= devicePixelRatio;
+    auto pstyle = keels::ParagraphStyle(keels::TextDirection::ltr);
+    fml::RefPtr<ParagraphBuilder> paragraphBuilder = fml::MakeRefCounted<ParagraphBuilder>(pstyle.encoded());
+    paragraphBuilder->addText2(u"Hello world");
+    auto paragraph = paragraphBuilder->build2();
+    paragraph->layout(logicalSize.width);
+
+    keels::Rect physicalBounds(0.0,0.0,logicalSize.width*devicePixelRatio,logicalSize.height*devicePixelRatio);
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",physicalBounds"
+              << ",left=" << physicalBounds.left
+              << ",top=" << physicalBounds.top
+              << ",right=" << physicalBounds.right
+              << ",bottom=" << physicalBounds.bottom << std::endl;
+
+    fml::RefPtr<PictureRecorder> recorder = fml::MakeRefCounted<PictureRecorder>();
+    fml::RefPtr<Canvas> canvas =
+      fml::MakeRefCounted<Canvas>(recorder->BeginRecording(
+          SkRect::MakeLTRB(SafeNarrow(physicalBounds.left), SafeNarrow(physicalBounds.top), SafeNarrow(physicalBounds.right),SafeNarrow(physicalBounds.bottom))));
+    recorder->set_canvas(canvas);
+    canvas->scale(devicePixelRatio,devicePixelRatio);
+    keels::Offset offset(logicalSize.width-paragraph->maxIntrinsicWidth(), logicalSize.height-paragraph->height());
+    offset.dx /= 2.0;
+    offset.dy /= 2.0;
+
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",offset," << "dx="<< offset.dx <<",dy=" << offset.dy << std::endl;
+    paragraph->paint(canvas.get(), offset.dx, offset.dy);
+    auto picture = recorder->endRecording2();
+    fml::RefPtr<SceneBuilder> sceneBuilder = fml::MakeRefCounted<SceneBuilder>();
+    auto layer = sceneBuilder->pushClipRect2(physicalBounds.left,physicalBounds.right,physicalBounds.top,physicalBounds.bottom,flutter::Clip::kAntiAlias);
+
+    bool isComplexHint = false;
+    bool willChangeHint = false;
+    int hints = (isComplexHint ? 1 : 0) | (willChangeHint ? 2 : 0);
+    sceneBuilder->addPicture(0.0, 0.0, picture.get(), hints);
+    sceneBuilder->pop();
+    auto scene = sceneBuilder->build2();
+    view->render(scene);
+  });
+
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", set begin frame"  << std::endl;
+  keels::PlatformDispatcher::instance().SetOnBeginFrame(begin_frame);
+  
+
+  return true;
 }
 
 bool RuntimeController::LaunchRootIsolate(

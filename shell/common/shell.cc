@@ -681,7 +681,8 @@ void Shell::RunEngine(
               result(Engine::RunStatus::Failure);
               return;
             }
-            auto run_result = weak_engine->Run(std::move(run_configuration));
+            //auto run_result = weak_engine->Run(std::move(run_configuration));
+            auto run_result = weak_engine->RunCapsule(std::move(run_configuration));
             if (run_result == flutter::Engine::RunStatus::Failure) {
               FML_LOG(ERROR) << "Could not launch engine with configuration.";
             }
