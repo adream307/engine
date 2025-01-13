@@ -5,6 +5,8 @@
 #include "flutter/runtime/runtime_controller.h"
 
 #include <utility>
+#include <iostream>
+#include <thread>
 
 #include "flutter/common/constants.h"
 #include "flutter/common/settings.h"
@@ -452,6 +454,14 @@ bool RuntimeController::HasLivePorts() {
 tonic::DartErrorHandleType RuntimeController::GetLastError() {
   std::shared_ptr<DartIsolate> root_isolate = root_isolate_.lock();
   return root_isolate ? root_isolate->GetLastError() : tonic::kNoError;
+}
+
+bool RuntimeController::LaunchCapsule(
+      const Settings& settings,
+      const fml::closure& create_callback) {
+
+  std::cout << __FILE__ << ":" <<__LINE__ <<  ":" << "============================================ LaunchCapsule =========================" << std::endl; 
+  return true;
 }
 
 bool RuntimeController::LaunchRootIsolate(

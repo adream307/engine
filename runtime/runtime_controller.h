@@ -157,6 +157,10 @@ class RuntimeController : public PlatformConfigurationClient {
       std::optional<std::string> dart_entrypoint_library,
       const std::vector<std::string>& dart_entrypoint_args,
       std::unique_ptr<IsolateConfiguration> isolate_configuration);
+  
+  [[nodiscard]] bool LaunchCapsule(
+      const Settings& settings,
+      const fml::closure& create_callback);
 
   //----------------------------------------------------------------------------
   /// @brief      Clone the runtime controller. Launching an isolate with a

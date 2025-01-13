@@ -9,6 +9,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <iostream>
+#include <thread>
 
 #include "flutter/common/settings.h"
 #include "flutter/fml/make_copyable.h"
@@ -208,6 +210,30 @@ bool Engine::Restart(RunConfiguration configuration) {
   runtime_controller_ = runtime_controller_->Clone();
   UpdateAssetManager(nullptr);
   return Run(std::move(configuration)) == Engine::RunStatus::Success;
+}
+
+Engine::RunStatus Engine::RunCapsule(RunConfiguration configuration) {
+  if (!configuration.IsValid()) {
+    FML_LOG(ERROR) << "Engine run configuration was invalid.";
+    return RunStatus::Failure;
+  }
+
+  UpdateAssetManager(configuration.GetAssetManager());
+
+  std::cout <<  __FILE__ << ":" <<__LINE__ <<  ":" << std::this_thread::get_id() << "======================================== Engine::RunGreen =================================" << std::endl; 
+
+  auto capsule_create_callback = [&]() {
+    std::cout << __FILE__ << ":" <<__LINE__ <<  ":" << std::this_thread::get_id() << ",============== capsule call back" << std::endl;
+    if (settings_.prefetched_default_font_manager) {
+      SetupDefaultFontManager();
+    }
+  };
+
+  if (!runtime_controller_->LaunchCapsule(settings_, capsule_create_callback)) {
+    return RunStatus::Failure;
+  }
+
+  return RunStatus::Success;
 }
 
 Engine::RunStatus Engine::Run(RunConfiguration configuration) {
