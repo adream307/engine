@@ -372,12 +372,13 @@ void PlatformConfiguration::DispatchSemanticsAction(int32_t node_id,
 void PlatformConfiguration::BeginFrame(fml::TimePoint frameTime,
                                        uint64_t frame_number) {
   std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",PlatformConfiguration::BeginFrame" << std::endl;
-  std::shared_ptr<tonic::DartState> dart_state =
-      begin_frame_.dart_state().lock();
-  if (!dart_state) {
-    return;
-  }
-  tonic::DartState::Scope scope(dart_state);
+  //TODO
+  // std::shared_ptr<tonic::DartState> dart_state =
+  //     begin_frame_.dart_state().lock();
+  // if (!dart_state) {
+  //   return;
+  // }
+  // tonic::DartState::Scope scope(dart_state);
 
   int64_t microseconds = (frameTime - fml::TimePoint()).ToMicroseconds();
 
