@@ -22,6 +22,7 @@
 #include "flutter/runtime/runtime_delegate.h"
 #include "third_party/tonic/dart_message_handler.h"
 #include "flutter/runtime/platform_dispatcher.h"
+#include "flutter/fml/make_copyable.h"
 
 namespace flutter {
 
@@ -477,6 +478,16 @@ bool RuntimeController::LaunchCapsule(
   } else {
     FML_DCHECK(false) << "RuntimeController created without window binding.";
   }
+
+  //================================= run capsule main ===================
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",======================== run capsule main =================" << std::endl;
+  auto begin_frame = fml::MakeCopyable([&](int microseconds) {
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", closure begin frame:" << microseconds << std::endl;
+  });
+
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", set begin frame"  << std::endl;
+  keels::PlatformDispatcher::instance().SetOnBeginFrame(begin_frame);
+  
 
   return true;
 }

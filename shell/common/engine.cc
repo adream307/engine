@@ -23,7 +23,6 @@
 #include "impeller/runtime_stage/runtime_stage.h"
 #include "rapidjson/document.h"
 #include "third_party/dart/runtime/include/dart_tools_api.h"
-#include "flutter/runtime/platform_dispatcher.h"
 
 namespace flutter {
 
@@ -234,13 +233,6 @@ Engine::RunStatus Engine::RunCapsule(RunConfiguration configuration) {
     return RunStatus::Failure;
   }
 
-  auto begin_frame = fml::MakeCopyable([&](int microseconds) {
-    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", closure begin frame:" << microseconds << std::endl;
-  });
-
-  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", set begin frame"  << std::endl;
-  keels::PlatformDispatcher::instance().SetOnBeginFrame(begin_frame);
-  
   return RunStatus::Success;
 }
 
