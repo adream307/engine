@@ -5,6 +5,8 @@
 #include "flutter/lib/ui/window/platform_configuration.h"
 
 #include <cstring>
+#include <iostream>
+#include <thread>
 
 #include "flutter/common/constants.h"
 #include "flutter/lib/ui/compositing/scene.h"
@@ -36,6 +38,7 @@ PlatformConfiguration::PlatformConfiguration(
     : client_(client) {}
 
 PlatformConfiguration::~PlatformConfiguration() {}
+
 
 void PlatformConfiguration::DidCreateIsolate() {
   Dart_Handle library = Dart_LookupLibrary(tonic::ToDart("dart:ui"));
@@ -366,6 +369,7 @@ void PlatformConfiguration::DispatchSemanticsAction(int32_t node_id,
 
 void PlatformConfiguration::BeginFrame(fml::TimePoint frameTime,
                                        uint64_t frame_number) {
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",PlatformConfiguration::BeginFrame" << std::endl;
   std::shared_ptr<tonic::DartState> dart_state =
       begin_frame_.dart_state().lock();
   if (!dart_state) {
