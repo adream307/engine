@@ -21,6 +21,7 @@
 #include "flutter/runtime/isolate_configuration.h"
 #include "flutter/runtime/runtime_delegate.h"
 #include "third_party/tonic/dart_message_handler.h"
+#include "flutter/runtime/platform_dispatcher.h"
 
 namespace flutter {
 
@@ -462,12 +463,19 @@ tonic::DartErrorHandleType RuntimeController::GetLastError() {
 bool RuntimeController::LaunchCapsule(
       const Settings& settings,
       const fml::closure& create_callback) {
-  auto ptr = keels::Capsule::CreateRunningCapsule(
-    settings,
-    std::make_unique<PlatformConfiguration>(this),
-    create_callback);
+  auto ptr = keels::Capsule::CreateRunningCapsule(settings, std::make_unique<PlatformConfiguration>(this),create_callback);
+
   if(ptr.lock()) {
     root_capsule_ = ptr;
+  }
+
+  if (auto* platform_configuration = GetPlatformConfigurationIfAvailable()) {
+    keels::PlatformDispatcher::instance().SetPlatformConfiguration(platform_configuration);
+    if (!FlushRuntimeStateToIsolate()) {
+      FML_DLOG(ERROR) << "Could not set up initial isolate state.";
+    }
+  } else {
+    FML_DCHECK(false) << "RuntimeController created without window binding.";
   }
 
   return true;
