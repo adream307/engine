@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include "flutter/runtime/runtime_controller.h"
+#include "flutter/runtime/capsule.h"
 
 #include <utility>
 #include <iostream>
@@ -460,7 +461,15 @@ bool RuntimeController::LaunchCapsule(
       const Settings& settings,
       const fml::closure& create_callback) {
 
-  std::cout << __FILE__ << ":" <<__LINE__ <<  ":" << "============================================ LaunchCapsule =========================" << std::endl; 
+  auto ptr = keels::Capsule::CreateRunningCapsule(
+    settings,
+    std::make_unique<PlatformConfiguration>(this),
+    create_callback);
+  if(ptr.lock()) {
+    std::cout << __FILE__ << ":" <<__LINE__ <<  ":" << "============================================ LaunchCapsule =========================" << std::endl; 
+    root_capsule_ = ptr;
+  }
+  
   return true;
 }
 

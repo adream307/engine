@@ -25,6 +25,7 @@
 #include "flutter/runtime/platform_isolate_manager.h"
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
+#include "flutter/runtime/capsule.h"
 
 namespace flutter {
 
@@ -653,6 +654,7 @@ class RuntimeController : public PlatformConfigurationClient {
   fml::RefPtr<const DartSnapshot> isolate_snapshot_;
   std::function<void(int64_t)> idle_notification_callback_;
   PlatformData platform_data_;
+  std::weak_ptr<keels::Capsule> root_capsule_;
   std::weak_ptr<DartIsolate> root_isolate_;
   std::weak_ptr<DartIsolate> spawning_isolate_;
   std::optional<uint32_t> root_isolate_return_code_;

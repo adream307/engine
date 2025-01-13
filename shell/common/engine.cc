@@ -220,7 +220,7 @@ Engine::RunStatus Engine::RunCapsule(RunConfiguration configuration) {
 
   UpdateAssetManager(configuration.GetAssetManager());
 
-  std::cout <<  __FILE__ << ":" <<__LINE__ <<  ":" << std::this_thread::get_id() << "======================================== Engine::RunGreen =================================" << std::endl; 
+  std::cout <<  __FILE__ << ":" <<__LINE__ <<  ":" << std::this_thread::get_id() << "======================================== Engine::RunCapsule =================================" << std::endl; 
 
   auto capsule_create_callback = [&]() {
     std::cout << __FILE__ << ":" <<__LINE__ <<  ":" << std::this_thread::get_id() << ",============== capsule call back" << std::endl;
