@@ -2,8 +2,6 @@
 #define KEELS_RUNTIME_PLATFORM_DISPATCHER_H_
 
 #include "flutter/lib/ui/window/platform_configuration.h"
-#include "flutter/fml/closure.h"
-
 namespace keels{
 
 class PlatformDispatcher{
@@ -16,14 +14,21 @@ public:
 
     void SetPlatformConfiguration(flutter::PlatformConfiguration* config) {config_ = config;}
     flutter::PlatformConfiguration* GetPlatformConfiguration() {return config_;}
-    void SetOnBeginFrame(const fml::closure& fn) {on_begin_frame_ = fn;}
-    const fml::closure& GetOnBeginFrame() {return on_begin_frame_;}
+
+    void SetOnBeginFrame(const std::function<void(int)>& fn) {on_begin_frame_ = fn;}
+    const std::function<void(int)>& GetOnBeginFrame() {return on_begin_frame_;}
+
+    void SetOnDrawFrame(const std::function<void()>& fn) {on_draw_frame_ = fn;}
+    const std::function<void()>& GetOnDrawFrame() {return on_draw_frame_;}
+
+    void SetOnUpdateFrameData(const std::function<void(int)>& fn) {on_update_frame_data_ = fn;}
+    const std::function<void(int)>& GetOnUpdateFrameData() {return on_update_frame_data_;}
 
 private:
     flutter::PlatformConfiguration* config_ = nullptr;
-    fml::closure on_begin_frame_;
-
-
+    std::function<void(int microseconds)> on_begin_frame_;
+    std::function<void()> on_draw_frame_;
+    std::function<void(int frameNumber)> on_update_frame_data_;
 };
 
 }

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include "flutter/lib/ui/window/platform_configuration.h"
+#include "flutter/runtime/platform_dispatcher.h"
 
 #include <cstring>
 #include <iostream>
@@ -380,15 +381,23 @@ void PlatformConfiguration::BeginFrame(fml::TimePoint frameTime,
 
   int64_t microseconds = (frameTime - fml::TimePoint()).ToMicroseconds();
 
-  tonic::CheckAndHandleError(
-      tonic::DartInvoke(begin_frame_.Get(), {
-                                                Dart_NewInteger(microseconds),
-                                                Dart_NewInteger(frame_number),
-                                            }));
+  auto &begin_frame = keels::PlatformDispatcher::instance().GetOnBeginFrame();
+  auto &update_frame_date = keels::PlatformDispatcher::instance().GetOnUpdateFrameData();
+  if(begin_frame) {
+    begin_frame(microseconds);
+  }
+  if(update_frame_date) {
+    update_frame_date(microseconds);
+  }
 
-  UIDartState::Current()->FlushMicrotasksNow();
+  //TODO
+  // UIDartState::Current()->FlushMicrotasksNow();
 
-  tonic::CheckAndHandleError(tonic::DartInvokeVoid(draw_frame_.Get()));
+  auto &draw_frame = keels::PlatformDispatcher::instance().GetOnDrawFrame();
+  if(draw_frame) {
+    draw_frame();
+  }
+
 }
 
 void PlatformConfiguration::ReportTimings(std::vector<int64_t> timings) {
