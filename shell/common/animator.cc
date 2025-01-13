@@ -9,6 +9,8 @@
 #include "flutter/fml/time/time_point.h"
 #include "flutter/fml/trace_event.h"
 #include "third_party/dart/runtime/include/dart_tools_api.h"
+#include <iostream>
+#include <thread>
 
 namespace flutter {
 
@@ -237,6 +239,7 @@ void Animator::DrawLastLayerTrees(
 }
 
 void Animator::RequestFrame(bool regenerate_layer_trees) {
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",Animator::RequestFrame" << std::endl;
   if (regenerate_layer_trees) {
     // This event will be closed by BeginFrame. BeginFrame will only be called
     // if regenerating the layer trees. If a frame has been requested to update
