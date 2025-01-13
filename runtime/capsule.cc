@@ -14,6 +14,7 @@ std::weak_ptr<Capsule> Capsule::CreateRunningCapsule(
     ptr.release();
     (*raw)->platform_configuration_ = std::move(platform_configuration);
     
+    
     return (*raw)->GetWeakPtr();
 }
 

@@ -334,8 +334,10 @@ bool RuntimeController::DispatchSemanticsAction(int32_t node_id,
 
 PlatformConfiguration*
 RuntimeController::GetPlatformConfigurationIfAvailable() {
-  std::shared_ptr<DartIsolate> root_isolate = root_isolate_.lock();
-  return root_isolate ? root_isolate->platform_configuration() : nullptr;
+  auto ptr = root_capsule_.lock();
+  return ptr ? ptr->platform_configuration() : nullptr;
+  //std::shared_ptr<DartIsolate> root_isolate = root_isolate_.lock();
+  //return root_isolate ? root_isolate->platform_configuration() : nullptr;
 }
 
 // |PlatformConfigurationClient|
@@ -460,16 +462,14 @@ tonic::DartErrorHandleType RuntimeController::GetLastError() {
 bool RuntimeController::LaunchCapsule(
       const Settings& settings,
       const fml::closure& create_callback) {
-
   auto ptr = keels::Capsule::CreateRunningCapsule(
     settings,
     std::make_unique<PlatformConfiguration>(this),
     create_callback);
   if(ptr.lock()) {
-    std::cout << __FILE__ << ":" <<__LINE__ <<  ":" << "============================================ LaunchCapsule =========================" << std::endl; 
     root_capsule_ = ptr;
   }
-  
+
   return true;
 }
 
