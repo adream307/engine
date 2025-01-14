@@ -494,7 +494,8 @@ bool RuntimeController::LaunchCapsule(
     auto pstyle = keels::ParagraphStyle(keels::TextDirection::ltr);
     auto paragraphBuilder = fml::MakeRefCounted<ParagraphBuilder>(pstyle.encoded());
     paragraphBuilder->addText2(u"Hello world");
-    auto paragraph = paragraphBuilder->build2(); 
+    auto paragraph = paragraphBuilder->build2();
+    paragraph->layout(logicalSize.width);
 
     keels::Rect physicalBounds(0.0,0.0,logicalSize.width*devicePixelRatio,logicalSize.height*devicePixelRatio);
     std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",physicalBounds"
