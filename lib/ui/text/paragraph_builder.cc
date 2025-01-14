@@ -523,6 +523,24 @@ void ParagraphBuilder::pop() {
   m_paragraph_builder_->Pop();
 }
 
+//TODO, return error code
+int32_t ParagraphBuilder::addText2(const std::u16string& text) {
+  if(text.empty()){
+    return 0;
+  }
+  const UChar* text_ptr = reinterpret_cast<const UChar*>(text.data());
+  UErrorCode error_code = U_ZERO_ERROR;
+  u_strToUTF8(nullptr, 0, nullptr, text_ptr, text.size(), &error_code);
+  if (error_code != U_BUFFER_OVERFLOW_ERROR) {
+    return -1;
+  }
+
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",ParagraphBuilder::addText2" << std::endl;
+
+  m_paragraph_builder_->AddText(text);
+  return 0;
+}
+
 Dart_Handle ParagraphBuilder::addText(const std::u16string& text) {
   if (text.empty()) {
     return Dart_Null();
