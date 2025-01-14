@@ -136,6 +136,8 @@ source_set("ui") {
     "ui_dart_state.h",
     "volatile_path_tracker.cc",
     "volatile_path_tracker.h",
+    "window.cc",
+    "window.h",
     "window/key_data.cc",
     "window/key_data.h",
     "window/key_data_packet.cc",

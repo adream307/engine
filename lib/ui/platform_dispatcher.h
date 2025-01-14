@@ -1,5 +1,5 @@
-#ifndef KEELS_RUNTIME_PLATFORM_DISPATCHER_H_
-#define KEELS_RUNTIME_PLATFORM_DISPATCHER_H_
+#ifndef KEELS_LIB_UI_PLATFORM_DISPATCHER_H_
+#define KEELS_LIB_UI_PLATFORM_DISPATCHER_H_
 
 #include "flutter/lib/ui/window/platform_configuration.h"
 namespace keels{
