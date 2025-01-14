@@ -22,5 +22,9 @@ std::vector<int32_t> ParagraphStyle::encodeParagraphStyle(
     return result;
 }
 
+NativeParagraphBuilder::NativeParagraphBuilder(const ParagraphStyle &style)
+    :defaultLeadingDistribution_(style.leadingDistribution())
+{}
+
 
 }

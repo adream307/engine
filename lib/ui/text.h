@@ -41,13 +41,23 @@ enum class TextLeadingDistribution:int32_t {
 class ParagraphStyle {
 public:
     ParagraphStyle(const std::optional<TextDirection>& textDirection);
+    const std::vector<int32_t>& encoded() const { return encoded_;}
+    TextLeadingDistribution leadingDistribution() const { return leadingDistribution_;};
 
 private:
     std::vector<int32_t> encodeParagraphStyle(const std::optional<TextDirection>& textDirection);
 
 private:
-    std::vector<int32_t > encoded_;
+    std::vector<int32_t> encoded_;
     TextLeadingDistribution leadingDistribution_;
+};
+
+class NativeParagraphBuilder {
+public:
+    NativeParagraphBuilder(const ParagraphStyle &style);
+private:
+    TextLeadingDistribution defaultLeadingDistribution_;
+    int placeholderCount_ = 0;
 };
 
 }
