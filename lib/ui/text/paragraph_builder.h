@@ -70,6 +70,7 @@ class ParagraphBuilder : public RefCountedDartWrappable<ParagraphBuilder> {
                       double baseline_offset,
                       unsigned baseline);
 
+  fml::RefPtr<Paragraph> build2();
   void build(Dart_Handle paragraph_handle);
 
  private:

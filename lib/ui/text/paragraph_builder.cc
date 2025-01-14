@@ -573,6 +573,13 @@ void ParagraphBuilder::addPlaceholder(double width,
   m_paragraph_builder_->AddPlaceholder(placeholder_run);
 }
 
+fml::RefPtr<Paragraph> ParagraphBuilder::build2() {
+  auto paragraph = fml::MakeRefCounted<Paragraph>(m_paragraph_builder_->Build());
+  m_paragraph_builder_.reset();
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",ParagraphBuilder::build2" << std::endl;
+  return paragraph;
+}
+
 void ParagraphBuilder::build(Dart_Handle paragraph_handle) {
   Paragraph::Create(paragraph_handle, m_paragraph_builder_->Build());
   m_paragraph_builder_.reset();
