@@ -20,6 +20,14 @@ void PlatformDispatcher::AddView(const int64_t view_id, const flutter::ViewportM
     }
 }
 
+void PlatformDispatcher::UpdateViewMetrics(const int64_t view_id, const flutter::ViewportMetrics& view_metrics) {
+    auto it = views_.find(view_id);
+    if (it != views_.end()) {
+        it->second->view_metrics()=view_metrics;
+        //TODO, _invoke(onMetricsChanged, _onMetricsChangedZone);
+    }
+}
+
 std::shared_ptr<FlutterView> PlatformDispatcher::implicitView() {
     auto it = views_.find(GetImplicitViewId());
     if(it!=views_.end()){

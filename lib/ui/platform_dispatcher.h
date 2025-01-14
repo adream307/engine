@@ -29,6 +29,7 @@ public:
     const std::function<void(int)>& GetOnUpdateFrameData() {return on_update_frame_data_;}
 
     void AddView(const int64_t view_id, const flutter::ViewportMetrics& view_metrics);
+    void UpdateViewMetrics(const int64_t view_id, const flutter::ViewportMetrics& view_metrics);
 
     int64_t GetImplicitViewId() const {return flutter::kFlutterImplicitViewId;}
 

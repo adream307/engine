@@ -155,6 +155,7 @@ bool PlatformConfiguration::RemoveView(int64_t view_id) {
 bool PlatformConfiguration::UpdateViewMetrics(
     int64_t view_id,
     const ViewportMetrics& view_metrics) {
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",PlatformConfiguration::UpdateViewMetrics" << std::endl;
   auto found_iter = metrics_.find(view_id);
   if (found_iter == metrics_.end()) {
     return false;
@@ -162,37 +163,39 @@ bool PlatformConfiguration::UpdateViewMetrics(
 
   found_iter->second = view_metrics;
 
-  std::shared_ptr<tonic::DartState> dart_state =
-      update_window_metrics_.dart_state().lock();
-  if (!dart_state) {
-    return false;
-  }
-  tonic::DartState::Scope scope(dart_state);
-  tonic::CheckAndHandleError(tonic::DartInvoke(
-      update_window_metrics_.Get(),
-      {
-          tonic::ToDart(view_id),
-          tonic::ToDart(view_metrics.device_pixel_ratio),
-          tonic::ToDart(view_metrics.physical_width),
-          tonic::ToDart(view_metrics.physical_height),
-          tonic::ToDart(view_metrics.physical_padding_top),
-          tonic::ToDart(view_metrics.physical_padding_right),
-          tonic::ToDart(view_metrics.physical_padding_bottom),
-          tonic::ToDart(view_metrics.physical_padding_left),
-          tonic::ToDart(view_metrics.physical_view_inset_top),
-          tonic::ToDart(view_metrics.physical_view_inset_right),
-          tonic::ToDart(view_metrics.physical_view_inset_bottom),
-          tonic::ToDart(view_metrics.physical_view_inset_left),
-          tonic::ToDart(view_metrics.physical_system_gesture_inset_top),
-          tonic::ToDart(view_metrics.physical_system_gesture_inset_right),
-          tonic::ToDart(view_metrics.physical_system_gesture_inset_bottom),
-          tonic::ToDart(view_metrics.physical_system_gesture_inset_left),
-          tonic::ToDart(view_metrics.physical_touch_slop),
-          tonic::ToDart(view_metrics.physical_display_features_bounds),
-          tonic::ToDart(view_metrics.physical_display_features_type),
-          tonic::ToDart(view_metrics.physical_display_features_state),
-          tonic::ToDart(view_metrics.display_id),
-      }));
+  keels::PlatformDispatcher::instance().UpdateViewMetrics(view_id, view_metrics);
+
+  // std::shared_ptr<tonic::DartState> dart_state =
+  //     update_window_metrics_.dart_state().lock();
+  // if (!dart_state) {
+  //   return false;
+  // }
+  // tonic::DartState::Scope scope(dart_state);
+  // tonic::CheckAndHandleError(tonic::DartInvoke(
+  //     update_window_metrics_.Get(),
+  //     {
+  //         tonic::ToDart(view_id),
+  //         tonic::ToDart(view_metrics.device_pixel_ratio),
+  //         tonic::ToDart(view_metrics.physical_width),
+  //         tonic::ToDart(view_metrics.physical_height),
+  //         tonic::ToDart(view_metrics.physical_padding_top),
+  //         tonic::ToDart(view_metrics.physical_padding_right),
+  //         tonic::ToDart(view_metrics.physical_padding_bottom),
+  //         tonic::ToDart(view_metrics.physical_padding_left),
+  //         tonic::ToDart(view_metrics.physical_view_inset_top),
+  //         tonic::ToDart(view_metrics.physical_view_inset_right),
+  //         tonic::ToDart(view_metrics.physical_view_inset_bottom),
+  //         tonic::ToDart(view_metrics.physical_view_inset_left),
+  //         tonic::ToDart(view_metrics.physical_system_gesture_inset_top),
+  //         tonic::ToDart(view_metrics.physical_system_gesture_inset_right),
+  //         tonic::ToDart(view_metrics.physical_system_gesture_inset_bottom),
+  //         tonic::ToDart(view_metrics.physical_system_gesture_inset_left),
+  //         tonic::ToDart(view_metrics.physical_touch_slop),
+  //         tonic::ToDart(view_metrics.physical_display_features_bounds),
+  //         tonic::ToDart(view_metrics.physical_display_features_type),
+  //         tonic::ToDart(view_metrics.physical_display_features_state),
+  //         tonic::ToDart(view_metrics.display_id),
+  //     }));
   return true;
 }
 

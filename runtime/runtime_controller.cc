@@ -496,6 +496,14 @@ bool RuntimeController::LaunchCapsule(
     paragraphBuilder->addText2(u"Hello world");
     auto paragraph = paragraphBuilder->build2(); 
 
+    keels::Rect physicalBounds(0.0,0.0,logicalSize.width*devicePixelRatio,logicalSize.height*devicePixelRatio);
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",physicalBounds"
+              << ",left=" << physicalBounds.left
+              << ",top=" << physicalBounds.top
+              << ",right=" << physicalBounds.right
+              << ",bottom=" << physicalBounds.bottom << std::endl;
+
+
 
   });
 

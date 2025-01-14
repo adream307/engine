@@ -13,10 +13,11 @@ public:
     FlutterView(int64_t view_id, PlatformDispatcher& platform_dispatcher,const flutter::ViewportMetrics& view_metrics);
     double devicePixelRatio() const { return view_metrics_.device_pixel_ratio;}
     Size physicalSize() const {return Size(view_metrics_.physical_width, view_metrics_.physical_height);}
+    flutter::ViewportMetrics& view_metrics() {return view_metrics_;}
 private:
     int64_t view_id_;
     PlatformDispatcher& platform_dispatcher_;
-    const flutter::ViewportMetrics view_metrics_;
+    flutter::ViewportMetrics view_metrics_;
 };
 }
 
