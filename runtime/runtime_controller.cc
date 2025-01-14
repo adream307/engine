@@ -483,6 +483,14 @@ bool RuntimeController::LaunchCapsule(
   std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",======================== run capsule main =================" << std::endl;
   auto begin_frame = fml::MakeCopyable([&](int microseconds) {
     std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", closure begin frame:" << microseconds << std::endl;
+
+    auto view = keels::PlatformDispatcher::instance().implicitView();
+    double devicePixelRatio = view->devicePixelRatio();
+    auto logicalSize = view->physicalSize();
+    logicalSize.width /= devicePixelRatio;
+    logicalSize.height /= devicePixelRatio;
+
+
   });
 
   std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", set begin frame"  << std::endl;

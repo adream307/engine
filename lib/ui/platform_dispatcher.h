@@ -3,9 +3,8 @@
 
 #include "flutter/lib/ui/window/platform_configuration.h"
 #include "flutter/common/constants.h"
+#include "flutter/lib/ui/window.h"
 namespace keels{
-
-class FlutterView;
 
 class PlatformDispatcher{
 private:
