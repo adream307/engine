@@ -13,8 +13,19 @@ PlatformDispatcher& PlatformDispatcher::instance() {
 }
 
 void PlatformDispatcher::AddView(const int64_t view_id, const flutter::ViewportMetrics& view_metrics) {
-    auto ptr = std::make_unique<FlutterView>(view_id, *this, view_metrics);
-    views_[view_id] = std::move(ptr);
+    if (views_.find(view_id) == views_.end()) {
+        auto ptr = std::make_shared<FlutterView>(view_id, *this, view_metrics);
+        views_[view_id] = std::move(ptr);
+        //TODO, _invoke(onMetricsChanged, _onMetricsChangedZone);
+    }
+}
+
+std::shared_ptr<FlutterView> PlatformDispatcher::implicitView() {
+    auto it = views_.find(GetImplicitViewId());
+    if(it!=views_.end()){
+        return it->second;
+    }
+    return nullptr;
 }
 
 

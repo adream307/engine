@@ -2,6 +2,7 @@
 #define KEELS_LIB_UI_PLATFORM_DISPATCHER_H_
 
 #include "flutter/lib/ui/window/platform_configuration.h"
+#include "flutter/common/constants.h"
 namespace keels{
 
 class FlutterView;
@@ -13,6 +14,8 @@ private:
 public:
     ~PlatformDispatcher()=default;
     static PlatformDispatcher& instance();
+
+    std::shared_ptr<FlutterView> implicitView();
 
     void SetPlatformConfiguration(flutter::PlatformConfiguration* config) {config_ = config;}
     flutter::PlatformConfiguration* GetPlatformConfiguration() {return config_;}
@@ -28,12 +31,14 @@ public:
 
     void AddView(const int64_t view_id, const flutter::ViewportMetrics& view_metrics);
 
+    int64_t GetImplicitViewId() const {return flutter::kFlutterImplicitViewId;}
+
 private:
     flutter::PlatformConfiguration* config_ = nullptr;
     std::function<void(int microseconds)> on_begin_frame_;
     std::function<void()> on_draw_frame_;
     std::function<void(int frameNumber)> on_update_frame_data_;
-    std::unordered_map<int64_t, std::unique_ptr<FlutterView>> views_;
+    std::unordered_map<int64_t, std::shared_ptr<FlutterView>> views_;
 };
 
 }

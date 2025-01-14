@@ -94,6 +94,8 @@ void PlatformConfiguration::AddView(int64_t view_id,
       metrics_.emplace(view_id, view_metrics);
   FML_DCHECK(insertion_happened);
 
+  keels::PlatformDispatcher::instance().AddView(view_id, view_metrics);
+
 //   std::shared_ptr<tonic::DartState> dart_state = add_view_.dart_state().lock();
 //   if (!dart_state) {
 //     return;
