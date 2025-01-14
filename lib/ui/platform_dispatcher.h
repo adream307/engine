@@ -4,6 +4,8 @@
 #include "flutter/lib/ui/window/platform_configuration.h"
 namespace keels{
 
+class FlutterView;
+
 class PlatformDispatcher{
 private:
     PlatformDispatcher();
@@ -24,11 +26,14 @@ public:
     void SetOnUpdateFrameData(const std::function<void(int)>& fn) {on_update_frame_data_ = fn;}
     const std::function<void(int)>& GetOnUpdateFrameData() {return on_update_frame_data_;}
 
+    void AddView(const int64_t view_id, const flutter::ViewportMetrics& view_metrics);
+
 private:
     flutter::PlatformConfiguration* config_ = nullptr;
     std::function<void(int microseconds)> on_begin_frame_;
     std::function<void()> on_draw_frame_;
     std::function<void(int frameNumber)> on_update_frame_data_;
+    std::unordered_map<int64_t, std::unique_ptr<FlutterView>> views_;
 };
 
 }
