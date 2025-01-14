@@ -109,6 +109,8 @@ source_set("ui") {
     "painting/single_frame_codec.h",
     "painting/vertices.cc",
     "painting/vertices.h",
+    "platform_dispatcher.cc",
+    "platform_dispatcher.h",
     "plugins/callback_cache.cc",
     "plugins/callback_cache.h",
     "semantics/custom_accessibility_action.cc",

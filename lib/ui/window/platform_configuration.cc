@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 #include "flutter/lib/ui/window/platform_configuration.h"
-#include "flutter/runtime/platform_dispatcher.h"
+#include "flutter/lib/ui/platform_dispatcher.h"
 
 #include <cstring>
 #include <iostream>

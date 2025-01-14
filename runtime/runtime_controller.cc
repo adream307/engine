@@ -21,7 +21,7 @@
 #include "flutter/runtime/isolate_configuration.h"
 #include "flutter/runtime/runtime_delegate.h"
 #include "third_party/tonic/dart_message_handler.h"
-#include "flutter/runtime/platform_dispatcher.h"
+#include "flutter/lib/ui/platform_dispatcher.h"
 #include "flutter/fml/make_copyable.h"
 
 namespace flutter {
