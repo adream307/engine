@@ -26,6 +26,7 @@
 #include "third_party/tonic/dart_binding_macros.h"
 #include "third_party/tonic/dart_library_natives.h"
 #include "third_party/tonic/typed_data/dart_byte_data.h"
+#include "flutter/lib/ui/platform_dispatcher.h"
 
 namespace flutter {
 namespace {
@@ -221,6 +222,32 @@ void decodeStrut(Dart_Handle strut_data,
     paragraph_style.strut_font_families.push_back("");
   }
 }
+
+//TODO
+ParagraphBuilder::ParagraphBuilder(const std::vector<int32_t>& encoded) {
+  int32_t mask = 0;
+  txt::ParagraphStyle style;
+  {
+    mask = encoded[0];
+
+    if (mask & kPSTextDirectionMask) {
+      style.text_direction =
+          static_cast<txt::TextDirection>(encoded[kPSTextDirectionIndex]);
+      std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",ParagraphBuilder::ParagraphBuilder" << std::endl;
+    }
+  }
+
+  auto cfg = keels::PlatformDispatcher::instance().GetPlatformConfiguration();
+  FontCollection& font_collection = cfg->client()->GetFontCollection();
+
+  //TODO
+  auto impeller_enabled = false;
+
+  m_paragraph_builder_ = txt::ParagraphBuilder::CreateSkiaBuilder(
+      style, font_collection.GetFontCollection(), impeller_enabled);
+
+}
+
 
 ParagraphBuilder::ParagraphBuilder(
     Dart_Handle encoded_data,

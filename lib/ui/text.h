@@ -58,6 +58,7 @@ public:
 private:
     TextLeadingDistribution defaultLeadingDistribution_;
     int placeholderCount_ = 0;
+    std::vector<double> placeholderScales_ = std::vector<double>{};
 };
 
 }

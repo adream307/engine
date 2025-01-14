@@ -69,6 +69,9 @@ class ParagraphBuilder : public RefCountedDartWrappable<ParagraphBuilder> {
   void build(Dart_Handle paragraph_handle);
 
  private:
+  //TODO
+  explicit ParagraphBuilder(const std::vector<int32_t>& encoded);
+
   explicit ParagraphBuilder(Dart_Handle encoded,
                             Dart_Handle strutData,
                             const std::string& fontFamily,

@@ -24,6 +24,7 @@
 #include "flutter/fml/make_copyable.h"
 #include "flutter/lib/ui/text.h"
 #include "flutter/lib/ui/platform_dispatcher.h"
+#include "flutter/lib/ui/text/paragraph_builder.h"
 
 namespace flutter {
 
@@ -491,6 +492,7 @@ bool RuntimeController::LaunchCapsule(
     logicalSize.width /= devicePixelRatio;
     logicalSize.height /= devicePixelRatio;
     auto pstyle = keels::ParagraphStyle(keels::TextDirection::ltr);
+    auto paragraphBuilder = fml::MakeRefCounted<ParagraphBuilder>(pstyle.encoded());
 
 
   });
