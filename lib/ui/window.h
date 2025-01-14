@@ -2,6 +2,7 @@
 #define KEELS_LIB_UI_WINDOW_H_
 
 #include "flutter/lib/ui/window/platform_configuration.h"
+#include "flutter/lib/ui/geometry.h"
 
 //dart file: flutter/bin/cache/pkg/sky_engine/lib/ui/window.dart
 
@@ -10,6 +11,8 @@ class PlatformDispatcher;
 class FlutterView{
 public:
     FlutterView(int64_t view_id, PlatformDispatcher& platform_dispatcher,const flutter::ViewportMetrics& view_metrics);
+    double devicePixelRatio() const { return view_metrics_.device_pixel_ratio;}
+    Size physicalSize() const {return Size(view_metrics_.physical_width, view_metrics_.physical_height);}
 private:
     int64_t view_id_;
     PlatformDispatcher& platform_dispatcher_;
