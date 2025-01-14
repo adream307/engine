@@ -21,8 +21,9 @@
 #include "flutter/runtime/isolate_configuration.h"
 #include "flutter/runtime/runtime_delegate.h"
 #include "third_party/tonic/dart_message_handler.h"
-#include "flutter/lib/ui/platform_dispatcher.h"
 #include "flutter/fml/make_copyable.h"
+#include "flutter/lib/ui/text.h"
+#include "flutter/lib/ui/platform_dispatcher.h"
 
 namespace flutter {
 
@@ -489,6 +490,7 @@ bool RuntimeController::LaunchCapsule(
     auto logicalSize = view->physicalSize();
     logicalSize.width /= devicePixelRatio;
     logicalSize.height /= devicePixelRatio;
+    auto pstyle = keels::ParagraphStyle(keels::TextDirection::ltr);
 
 
   });
