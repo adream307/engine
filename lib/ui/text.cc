@@ -3,8 +3,11 @@
 namespace keels{
 
 
+//TODO
 ParagraphStyle::ParagraphStyle(const std::optional<TextDirection>& textDirection)
-    :encoded_(encodeParagraphStyle(textDirection)){}
+    :encoded_(encodeParagraphStyle(textDirection)),
+     leadingDistribution_(TextLeadingDistribution::proportional)
+    {}
 
 //TODO
 std::vector<int32_t> ParagraphStyle::encodeParagraphStyle(
