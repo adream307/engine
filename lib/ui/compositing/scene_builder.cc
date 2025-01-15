@@ -227,6 +227,7 @@ void SceneBuilder::addRetained(const fml::RefPtr<EngineLayer>& retainedLayer) {
 
 void SceneBuilder::pop() {
   PopLayer();
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",SceneBuilder::PopLayer" << std::endl;
 }
 
 void SceneBuilder::addPicture(double dx,

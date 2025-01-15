@@ -530,8 +530,7 @@ bool RuntimeController::LaunchCapsule(
     bool willChangeHint = false;
     int hints = (isComplexHint ? 1 : 0) | (willChangeHint ? 2 : 0);
     sceneBuilder->addPicture(0.0, 0.0, picture.get(), hints);
-
-
+    sceneBuilder->pop();
 
   });
 
