@@ -524,6 +524,7 @@ bool RuntimeController::LaunchCapsule(
     fml::RefPtr<SceneBuilder> sceneBuilder = fml::MakeRefCounted<SceneBuilder>();
 
 
+
   });
 
   std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", set begin frame"  << std::endl;
