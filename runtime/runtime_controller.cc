@@ -29,6 +29,8 @@
 #include "flutter/lib/ui/painting/canvas.h"
 #include "flutter/lib/ui/floating_point.h"
 #include "flutter/lib/ui/compositing/scene_builder.h"
+#include "flutter/lib/ui/geometry.h"
+#include "flutter/lib/ui/painting.h"
 
 namespace flutter {
 
@@ -522,6 +524,7 @@ bool RuntimeController::LaunchCapsule(
     paragraph->paint(canvas.get(), offset.dx, offset.dy);
     auto picture = recorder->endRecording2();
     fml::RefPtr<SceneBuilder> sceneBuilder = fml::MakeRefCounted<SceneBuilder>();
+    auto layer = sceneBuilder->pushClipRect2(physicalBounds.left,physicalBounds.right,physicalBounds.top,physicalBounds.bottom,static_cast<int32_t>(keels::Clip::antiAlias));
 
 
 
