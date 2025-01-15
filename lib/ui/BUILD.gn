@@ -45,6 +45,8 @@ source_set("ui") {
     "isolate_name_server/isolate_name_server.h",
     "isolate_name_server/isolate_name_server_natives.cc",
     "isolate_name_server/isolate_name_server_natives.h",
+    "painting.cc",
+    "painting.h",
     "painting/canvas.cc",
     "painting/canvas.h",
     "painting/codec.cc",

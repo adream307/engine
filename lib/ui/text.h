@@ -52,6 +52,7 @@ private:
     TextLeadingDistribution leadingDistribution_;
 };
 
+// dart:ParagraphBuilder
 class NativeParagraphBuilder {
 public:
     NativeParagraphBuilder(const ParagraphStyle &style);
