@@ -369,8 +369,8 @@ void RuntimeController::Render(int64_t view_id,
                                Scene* scene,
                                double width,
                                double height) {
-  const ViewportMetrics* view_metrics =
-      UIDartState::Current()->platform_configuration()->GetMetrics(view_id);
+  const ViewportMetrics* view_metrics = 
+      keels::PlatformDispatcher::instance().GetPlatformConfiguration()->GetMetrics(view_id);
   if (view_metrics == nullptr) {
     return;
   }
