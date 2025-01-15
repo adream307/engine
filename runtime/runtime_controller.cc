@@ -531,7 +531,8 @@ bool RuntimeController::LaunchCapsule(
     int hints = (isComplexHint ? 1 : 0) | (willChangeHint ? 2 : 0);
     sceneBuilder->addPicture(0.0, 0.0, picture.get(), hints);
     sceneBuilder->pop();
-
+    auto scene = sceneBuilder->build2();
+    view->render(scene);
   });
 
   std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", set begin frame"  << std::endl;

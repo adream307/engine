@@ -301,6 +301,16 @@ void SceneBuilder::setCheckerboardOffscreenLayers(bool checkerboard) {
   checkerboard_offscreen_layers_ = checkerboard;
 }
 
+fml::RefPtr<Scene> SceneBuilder::build2() {
+  FML_DCHECK(layer_stack_.size() >= 1);
+
+  auto scene = fml::MakeRefCounted<Scene>(std::move(layer_stack_[0]), rasterizer_tracing_threshold_,
+      checkerboard_raster_cache_images_, checkerboard_offscreen_layers_);
+  layer_stack_.clear();
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",SceneBuilder::build2" << std::endl;
+  return scene;
+}
+
 void SceneBuilder::build(Dart_Handle scene_handle) {
   FML_DCHECK(layer_stack_.size() >= 1);
 
