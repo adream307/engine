@@ -3,16 +3,6 @@
 
 #include <cstdint>
 
-namespace keels{
-
-enum class Clip :int32_t {
-  none,
-  hardEdge,
-  antiAlias,
-  antiAliasWithSaveLayer
-};
-
-}
 
 #endif
 

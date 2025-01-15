@@ -524,7 +524,7 @@ bool RuntimeController::LaunchCapsule(
     paragraph->paint(canvas.get(), offset.dx, offset.dy);
     auto picture = recorder->endRecording2();
     fml::RefPtr<SceneBuilder> sceneBuilder = fml::MakeRefCounted<SceneBuilder>();
-    auto layer = sceneBuilder->pushClipRect2(physicalBounds.left,physicalBounds.right,physicalBounds.top,physicalBounds.bottom,static_cast<int32_t>(keels::Clip::antiAlias));
+    auto layer = sceneBuilder->pushClipRect2(physicalBounds.left,physicalBounds.right,physicalBounds.top,physicalBounds.bottom,flutter::Clip::kAntiAlias);
 
 
 

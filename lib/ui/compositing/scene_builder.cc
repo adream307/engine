@@ -74,13 +74,11 @@ fml::RefPtr<EngineLayer> SceneBuilder::pushClipRect2(double left,
                                 double right,
                                 double top,
                                 double bottom,
-                                int clipBehavior,
+                                flutter::Clip clipBehavior,
                                 const fml::RefPtr<EngineLayer>& oldLayer) {
   SkRect clipRect = SkRect::MakeLTRB(SafeNarrow(left), SafeNarrow(top),
                                      SafeNarrow(right), SafeNarrow(bottom));
-  flutter::Clip clip_behavior = static_cast<flutter::Clip>(clipBehavior);
-  auto layer =
-      std::make_shared<flutter::ClipRectLayer>(clipRect, clip_behavior);
+  auto layer = std::make_shared<flutter::ClipRectLayer>(clipRect, clipBehavior);
   PushLayer(layer);
   auto engine_layer = fml::MakeRefCounted<EngineLayer>(layer);
 

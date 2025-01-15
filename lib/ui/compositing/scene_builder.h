@@ -54,7 +54,7 @@ class SceneBuilder : public RefCountedDartWrappable<SceneBuilder> {
                     double right,
                     double top,
                     double bottom,
-                    int clipBehavior,
+                    flutter::Clip clipBehavior,
                     const fml::RefPtr<EngineLayer>& oldLayer=nullptr);
 
   void pushClipRect(Dart_Handle layer_handle,
