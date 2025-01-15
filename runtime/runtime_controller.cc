@@ -26,6 +26,8 @@
 #include "flutter/lib/ui/platform_dispatcher.h"
 #include "flutter/lib/ui/text/paragraph_builder.h"
 #include "flutter/lib/ui/painting/picture_recorder.h"
+#include "flutter/lib/ui/painting/canvas.h"
+#include "flutter/lib/ui/floating_point.h"
 
 namespace flutter {
 
@@ -493,7 +495,7 @@ bool RuntimeController::LaunchCapsule(
     logicalSize.width /= devicePixelRatio;
     logicalSize.height /= devicePixelRatio;
     auto pstyle = keels::ParagraphStyle(keels::TextDirection::ltr);
-    auto paragraphBuilder = fml::MakeRefCounted<ParagraphBuilder>(pstyle.encoded());
+    fml::RefPtr<ParagraphBuilder> paragraphBuilder = fml::MakeRefCounted<ParagraphBuilder>(pstyle.encoded());
     paragraphBuilder->addText2(u"Hello world");
     auto paragraph = paragraphBuilder->build2();
     paragraph->layout(logicalSize.width);
@@ -504,8 +506,12 @@ bool RuntimeController::LaunchCapsule(
               << ",top=" << physicalBounds.top
               << ",right=" << physicalBounds.right
               << ",bottom=" << physicalBounds.bottom << std::endl;
-    auto recorder = fml::MakeRefCounted<PictureRecorder>();
 
+    fml::RefPtr<PictureRecorder> recorder = fml::MakeRefCounted<PictureRecorder>();
+    fml::RefPtr<Canvas> canvas =
+      fml::MakeRefCounted<Canvas>(recorder->BeginRecording(
+          SkRect::MakeLTRB(SafeNarrow(physicalBounds.left), SafeNarrow(physicalBounds.top), SafeNarrow(physicalBounds.right),SafeNarrow(physicalBounds.bottom))));
+    recorder->set_canvas(canvas);
 
 
   });
