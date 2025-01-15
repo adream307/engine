@@ -28,6 +28,7 @@
 #include "flutter/lib/ui/painting/picture_recorder.h"
 #include "flutter/lib/ui/painting/canvas.h"
 #include "flutter/lib/ui/floating_point.h"
+#include "flutter/lib/ui/compositing/scene_builder.h"
 
 namespace flutter {
 
@@ -520,6 +521,7 @@ bool RuntimeController::LaunchCapsule(
     std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",offset," << "dx="<< offset.dx <<",dy=" << offset.dy << std::endl;
     paragraph->paint(canvas.get(), offset.dx, offset.dy);
     auto picture = recorder->endRecording2();
+    fml::RefPtr<SceneBuilder> sceneBuilder = fml::MakeRefCounted<SceneBuilder>();
 
 
   });
