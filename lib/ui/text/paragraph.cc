@@ -72,6 +72,7 @@ void Paragraph::paint(Canvas* canvas, double x, double y) {
   if (builder) {
     m_paragraph_->Paint(builder, x, y);
   }
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",paint" << std::endl;
 }
 
 static tonic::Float32List EncodeTextBoxes(

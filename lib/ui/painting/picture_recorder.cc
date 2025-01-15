@@ -31,6 +31,22 @@ sk_sp<DisplayListBuilder> PictureRecorder::BeginRecording(SkRect bounds) {
   return display_list_builder_;
 }
 
+fml::RefPtr<Picture> PictureRecorder::endRecording2() {
+  if (!canvas_) {
+    return nullptr;
+  }
+
+  auto display_list = display_list_builder_->Build();
+  display_list_builder_ = nullptr;
+
+  FML_DCHECK(display_list->has_rtree());
+  auto canvas_picture = fml::MakeRefCounted<Picture>(std::move(display_list));
+  canvas_->Invalidate();
+  canvas_ = nullptr;
+  std::cout << __FILE__ << ":" <<__LINE__ << ":" << std::this_thread::get_id() << ",PictureRecorder::endRecording2" << std::endl;
+  return canvas_picture;
+}
+
 void PictureRecorder::endRecording(Dart_Handle dart_picture) {
   if (!canvas_) {
     return;

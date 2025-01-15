@@ -513,7 +513,13 @@ bool RuntimeController::LaunchCapsule(
           SkRect::MakeLTRB(SafeNarrow(physicalBounds.left), SafeNarrow(physicalBounds.top), SafeNarrow(physicalBounds.right),SafeNarrow(physicalBounds.bottom))));
     recorder->set_canvas(canvas);
     canvas->scale(devicePixelRatio,devicePixelRatio);
-    
+    keels::Offset offset(logicalSize.width-paragraph->maxIntrinsicWidth(), logicalSize.height-paragraph->height());
+    offset.dx /= 2.0;
+    offset.dy /= 2.0;
+
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",offset," << "dx="<< offset.dx <<",dy=" << offset.dy << std::endl;
+    paragraph->paint(canvas.get(), offset.dx, offset.dy);
+    auto picture = recorder->endRecording2();
 
 
   });

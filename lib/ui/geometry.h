@@ -21,6 +21,12 @@ struct Rect{
     double bottom;
 };
 
+struct Offset{
+    Offset(double x, double y):dx(x),dy(y){}
+    double dx;
+    double dy;
+};
+
 };
 
 #endif
