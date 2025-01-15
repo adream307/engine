@@ -512,6 +512,8 @@ bool RuntimeController::LaunchCapsule(
       fml::MakeRefCounted<Canvas>(recorder->BeginRecording(
           SkRect::MakeLTRB(SafeNarrow(physicalBounds.left), SafeNarrow(physicalBounds.top), SafeNarrow(physicalBounds.right),SafeNarrow(physicalBounds.bottom))));
     recorder->set_canvas(canvas);
+    canvas->scale(devicePixelRatio,devicePixelRatio);
+    
 
 
   });
