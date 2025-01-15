@@ -246,6 +246,7 @@ void SceneBuilder::addPicture(double dx,
         !!(hints & 1), !!(hints & 2));
     AddLayer(std::move(layer));
   }
+  std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",SceneBuilder::addPicture" << std::endl;
 }
 
 void SceneBuilder::addTexture(double dx,

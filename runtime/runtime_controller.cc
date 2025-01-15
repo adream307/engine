@@ -526,6 +526,11 @@ bool RuntimeController::LaunchCapsule(
     fml::RefPtr<SceneBuilder> sceneBuilder = fml::MakeRefCounted<SceneBuilder>();
     auto layer = sceneBuilder->pushClipRect2(physicalBounds.left,physicalBounds.right,physicalBounds.top,physicalBounds.bottom,flutter::Clip::kAntiAlias);
 
+    bool isComplexHint = false;
+    bool willChangeHint = false;
+    int hints = (isComplexHint ? 1 : 0) | (willChangeHint ? 2 : 0);
+    sceneBuilder->addPicture(0.0, 0.0, picture.get(), hints);
+
 
 
   });
