@@ -25,6 +25,7 @@
 #include "flutter/lib/ui/text.h"
 #include "flutter/lib/ui/platform_dispatcher.h"
 #include "flutter/lib/ui/text/paragraph_builder.h"
+#include "flutter/lib/ui/painting/picture_recorder.h"
 
 namespace flutter {
 
@@ -503,6 +504,7 @@ bool RuntimeController::LaunchCapsule(
               << ",top=" << physicalBounds.top
               << ",right=" << physicalBounds.right
               << ",bottom=" << physicalBounds.bottom << std::endl;
+    auto recorder = fml::MakeRefCounted<PictureRecorder>();
 
 
 
