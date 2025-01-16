@@ -39,6 +39,8 @@ source_set("ui") {
     "dart_wrapper.h",
     "floating_point.h",
     "geometry.h",
+    "helloworld.cc",
+    "helloworld.h",
     "io_manager.cc",
     "io_manager.h",
     "isolate_name_server/isolate_name_server.cc",
