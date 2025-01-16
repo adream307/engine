@@ -15,11 +15,18 @@
 namespace keels
 {
 
-class TextSpan{
+class InlineSpan {
+public:
+    InlineSpan() = default;
+    ~InlineSpan() = default;
+    virtual void build(fml::RefPtr<flutter::ParagraphBuilder> builder) = 0; 
+};
+
+class TextSpan : public InlineSpan{
 public:
     TextSpan(const std::u16string& text);
     std::u16string& text() {return  text_;}
-    void build(fml::RefPtr<flutter::ParagraphBuilder> builder);
+    void build(fml::RefPtr<flutter::ParagraphBuilder> builder) override;
 
 private:
     std::u16string text_;
