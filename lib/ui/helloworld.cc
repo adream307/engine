@@ -30,4 +30,12 @@ ParagraphStyle TextPainter::_createParagraphStyle(const std::optional<TextAlign>
     );
 }
 
+fml::RefPtr<flutter::ParagraphBuilder> TextPainter::_createParagraph(InlineSpan &text)
+{
+    auto style = _createParagraphStyle();
+    auto builder = fml::MakeRefCounted<flutter::ParagraphBuilder>(style.encoded());
+    text.build(builder);
+    return builder;
+}
+
 }

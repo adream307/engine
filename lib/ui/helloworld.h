@@ -55,7 +55,7 @@ public:
     TextPainter();
 private:
     ParagraphStyle _createParagraphStyle(const std::optional<TextAlign> &textAlignOverride=std::nullopt);
-    fml::RefPtr<flutter::ParagraphBuilder> _createParagraph(InlineSpan text);
+    fml::RefPtr<flutter::ParagraphBuilder> _createParagraph(InlineSpan &text);
 private:
     TextAlign textAlign_;
     TextDirection textDirection_;
