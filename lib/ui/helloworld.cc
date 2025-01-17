@@ -14,4 +14,20 @@ ParagraphStyle TextStyle::getParagraphStyle(const TextAlign &textAlign,
     return ParagraphStyle(textAlign, textDirection, textScaler.scale(kDefaultFontSize));
 }
 
+TextPainter::TextPainter():
+    textAlign_(TextAlign::start),
+    textDirection_(TextDirection::rtl),
+    textScaler_(TextScaler::LinearTextScaler(1.0))
+{}
+
+ParagraphStyle TextPainter::_createParagraphStyle(const std::optional<TextAlign> &textAlignOverride)
+{
+    TextStyle baseStyle;
+    return baseStyle.getParagraphStyle(
+        textAlignOverride.has_value() ? textAlignOverride.value() : textAlign_,
+        textDirection_,
+        textScaler_
+    );
+}
+
 }
