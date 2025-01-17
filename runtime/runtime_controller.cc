@@ -497,7 +497,7 @@ bool RuntimeController::LaunchCapsule(
     auto logicalSize = view->physicalSize();
     logicalSize.width /= devicePixelRatio;
     logicalSize.height /= devicePixelRatio;
-    auto pstyle = keels::ParagraphStyle(keels::TextDirection::ltr);
+    auto pstyle = keels::ParagraphStyle(std::nullopt, keels::TextDirection::ltr, std::nullopt);
     fml::RefPtr<ParagraphBuilder> paragraphBuilder = fml::MakeRefCounted<ParagraphBuilder>(pstyle.encoded());
     paragraphBuilder->addText2(u"Hello world");
     auto paragraph = paragraphBuilder->build2();

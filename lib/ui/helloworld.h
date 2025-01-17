@@ -15,6 +15,8 @@
 namespace keels
 {
 
+const inline double kDefaultFontSize = 14.0;
+
 class InlineSpan {
 public:
     InlineSpan() = default;
@@ -30,7 +32,28 @@ public:
 
 private:
     std::u16string text_;
+};
 
+class TextScaler{
+public:
+    static const TextScaler LinearTextScaler(double factor){return TextScaler(factor);}
+    TextScaler(double factor):textScaleFactor_(factor){} 
+    double scale(double fontSize) const { return fontSize*textScaleFactor_;}
+private:
+    double textScaleFactor_;
+};
+
+class TextStyle{
+public:
+    ParagraphStyle getParagraphStyle(const TextAlign &textAlign,
+                                     const TextDirection &textDirection,
+                                     const TextScaler &textScaler);
+};
+
+class TextPainter {
+public:
+private:
+    fml::RefPtr<flutter::ParagraphBuilder> _createParagraph(InlineSpan text);
 };
 
 
