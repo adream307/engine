@@ -56,6 +56,7 @@ class TextPainter {
 public:
     TextPainter(InlineSpan& text);
     void layout(double minWidth, double maxWidth);
+    const std::u16string& plainText() const {return text_.toPlainText();} 
 private:
     ParagraphStyle _createParagraphStyle(const std::optional<TextAlign> &textAlignOverride=std::nullopt);
     fml::RefPtr<flutter::Paragraph> _createParagraph(InlineSpan& text);
@@ -66,6 +67,14 @@ private:
     TextScaler textScaler_;
     InlineSpan& text_;
     bool rebuildParagraphForPaint_;
+};
+
+class RenderParagraph{
+public:
+    RenderParagraph(InlineSpan &text);
+
+private:
+    TextPainter textPainter_;
 };
 
 

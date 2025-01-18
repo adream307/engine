@@ -29,6 +29,7 @@ void TextPainter::layout(double minWidth, double maxWidth)
     double layoutMaxWidth = maxWidth;
     auto paragraph = _createParagraph(text_);
     paragraph->layout(layoutMaxWidth);
+    //TODO: flutter/packages/flutter/lib/src/painting/text_painter.dart: 1192
 }
 
 double TextPainter::_computePaintOffsetFraction(TextAlign textAlign, TextDirection textDirection)
@@ -64,6 +65,10 @@ fml::RefPtr<flutter::Paragraph> TextPainter::_createParagraph(InlineSpan& text)
     text.build(builder);
     rebuildParagraphForPaint_=false;
     return builder->build2();
+}
+
+RenderParagraph::RenderParagraph(InlineSpan &text):textPainter_(text) {
+
 }
 
 }
