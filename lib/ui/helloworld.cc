@@ -71,4 +71,8 @@ RenderParagraph::RenderParagraph(InlineSpan &text):textPainter_(text) {
 
 }
 
+void RenderParagraph::_layoutTextWithConstraints(BoxConstraints constraints) {
+    textPainter_.layout(constraints.minWidth, constraints.maxWidth);
+}
+
 }

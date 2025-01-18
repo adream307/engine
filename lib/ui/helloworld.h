@@ -69,14 +69,24 @@ private:
     bool rebuildParagraphForPaint_;
 };
 
+class BoxConstraints {
+public:
+    BoxConstraints(double minW, double maxW, double minH, double maxH): minWidth(minW),maxWidth(maxW),minHeight(minH),maxHeight(maxH){}
+    double minWidth;
+    double maxWidth;
+    double minHeight;
+    double maxHeight;
+};
+
+
 class RenderParagraph{
 public:
     RenderParagraph(InlineSpan &text);
 
 private:
+    void _layoutTextWithConstraints(BoxConstraints constraints);
     TextPainter textPainter_;
 };
-
 
 }
 
