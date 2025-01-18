@@ -87,4 +87,14 @@ void RenderPositionedBox::performLayout() {
     child_->performLayout();
 }
 
+void RenderView::performLayout() {
+    child_->performLayout();
+}
+
+void PipelineOwner::flushLayout() {
+    for(auto & node : nodesNeedingLayout_) {
+        node->_layoutWithoutResize();
+    }
+}
+
 }

@@ -89,7 +89,8 @@ public:
     RenderObject()=default;
     ~RenderObject()=default;
     void layout();
-    virtual void performLayout() = 0; 
+    virtual void performLayout() = 0;
+    void _layoutWithoutResize() {performLayout();}
 protected:
     BoxConstraints constraints_;
 };
@@ -110,6 +111,21 @@ public:
     void performLayout() override;
 private:
     std::shared_ptr<RenderObject> child_;
+};
+
+class RenderView : public RenderObject{
+public:
+    RenderView()=default;
+    void performLayout() override;
+private:
+    std::shared_ptr<RenderObject> child_;
+};
+
+class PipelineOwner {
+public:
+    void flushLayout();
+private:
+    std::list<std::shared_ptr<RenderObject>> nodesNeedingLayout_;
 };
 
 }
