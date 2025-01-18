@@ -25,6 +25,12 @@ enum class TextAlign {
   end
 };
 
+class ParagraphConstraints {
+public:
+  ParagraphConstraints(double w):width(w){}
+  double width;
+};
+
 class ParagraphStyle {
 public:
     ParagraphStyle(const std::optional<TextAlign>& textAlign,

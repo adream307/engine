@@ -24,14 +24,11 @@ TextPainter::TextPainter(InlineSpan& text):
 }
 
 
-fml::RefPtr<flutter::Paragraph> TextPainter::paragraph()
-{
-    return _createParagraph(text_);
-}
-
 void TextPainter::layout(double minWidth, double maxWidth)
 {
-
+    double layoutMaxWidth = maxWidth;
+    auto paragraph = _createParagraph(text_);
+    paragraph->layout(layoutMaxWidth);
 }
 
 double TextPainter::_computePaintOffsetFraction(TextAlign textAlign, TextDirection textDirection)

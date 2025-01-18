@@ -22,6 +22,7 @@ public:
     InlineSpan() = default;
     ~InlineSpan() = default;
     virtual void build(fml::RefPtr<flutter::ParagraphBuilder> builder) = 0; 
+    virtual const std::u16string& toPlainText() const = 0;
 };
 
 class TextSpan : public InlineSpan{
@@ -29,6 +30,7 @@ public:
     TextSpan(const std::u16string& text);
     std::u16string& text() {return  text_;}
     void build(fml::RefPtr<flutter::ParagraphBuilder> builder) override;
+    const std::u16string& toPlainText() const override {return text_;}
 
 private:
     std::u16string text_;
@@ -53,7 +55,6 @@ public:
 class TextPainter {
 public:
     TextPainter(InlineSpan& text);
-    fml::RefPtr<flutter::Paragraph> paragraph();
     void layout(double minWidth, double maxWidth);
 private:
     ParagraphStyle _createParagraphStyle(const std::optional<TextAlign> &textAlignOverride=std::nullopt);
