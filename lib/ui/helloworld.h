@@ -21,7 +21,7 @@ const inline double kDefaultFontSize = 14.0;
 class InlineSpan {
 public:
     InlineSpan() = default;
-    ~InlineSpan() = default;
+    virtual ~InlineSpan() = default;
     virtual void build(fml::RefPtr<flutter::ParagraphBuilder> builder) = 0; 
     virtual const std::u16string& toPlainText() const = 0;
 };
