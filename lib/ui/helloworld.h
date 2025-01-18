@@ -11,6 +11,7 @@
 #include "flutter/lib/ui/compositing/scene_builder.h"
 #include "flutter/lib/ui/geometry.h"
 #include "flutter/lib/ui/painting.h"
+#include <limits>
 
 namespace keels
 {
@@ -71,7 +72,11 @@ private:
 
 class BoxConstraints {
 public:
-    BoxConstraints(double minW, double maxW, double minH, double maxH): minWidth(minW),maxWidth(maxW),minHeight(minH),maxHeight(maxH){}
+    BoxConstraints(double minW=0,
+                   double maxW=std::numeric_limits<double>::infinity(),
+                   double minH=0,
+                   double maxH=std::numeric_limits<double>::infinity())
+                   :minWidth(minW),maxWidth(maxW),minHeight(minH),maxHeight(maxH){}
     double minWidth;
     double maxWidth;
     double minHeight;
@@ -82,10 +87,12 @@ public:
 class RenderParagraph{
 public:
     RenderParagraph(InlineSpan &text);
+    void performLayout();
 
 private:
     void _layoutTextWithConstraints(BoxConstraints constraints);
     TextPainter textPainter_;
+    BoxConstraints constraints_;
 };
 
 }
