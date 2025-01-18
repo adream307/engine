@@ -14,11 +14,41 @@ ParagraphStyle TextStyle::getParagraphStyle(const TextAlign &textAlign,
     return ParagraphStyle(textAlign, textDirection, textScaler.scale(kDefaultFontSize));
 }
 
-TextPainter::TextPainter():
+TextPainter::TextPainter(InlineSpan& text):
     textAlign_(TextAlign::start),
     textDirection_(TextDirection::rtl),
-    textScaler_(TextScaler::LinearTextScaler(1.0))
-{}
+    textScaler_(TextScaler::LinearTextScaler(1.0)),
+    text_(text)
+{
+
+}
+
+
+fml::RefPtr<flutter::Paragraph> TextPainter::paragraph()
+{
+    return _createParagraph(text_);
+}
+
+void TextPainter::layout(double minWidth, double maxWidth)
+{
+
+}
+
+double TextPainter::_computePaintOffsetFraction(TextAlign textAlign, TextDirection textDirection)
+{
+    if(textAlign==TextAlign::left) return 0.0;
+    if(textAlign==TextAlign::right) return 1.0;
+    if(textAlign==TextAlign::center) return 0.5;
+    if(textAlign==TextAlign::start || textAlign==TextAlign::justify) {
+        if (textDirection==TextDirection::ltr) return 0.0;
+        else if (textDirection==TextDirection::rtl) return 1.0;
+    }
+    if(textAlign==TextAlign::end) {
+        if (textDirection==TextDirection::ltr) return 1.0;
+        else if (textDirection==TextDirection::rtl) return 0.0;
+    }
+    return 0.0;
+}
 
 ParagraphStyle TextPainter::_createParagraphStyle(const std::optional<TextAlign> &textAlignOverride)
 {
@@ -30,7 +60,7 @@ ParagraphStyle TextPainter::_createParagraphStyle(const std::optional<TextAlign>
     );
 }
 
-fml::RefPtr<flutter::Paragraph> TextPainter::_createParagraph(InlineSpan &text)
+fml::RefPtr<flutter::Paragraph> TextPainter::_createParagraph(InlineSpan& text)
 {
     auto style = _createParagraphStyle();
     auto builder = fml::MakeRefCounted<flutter::ParagraphBuilder>(style.encoded());

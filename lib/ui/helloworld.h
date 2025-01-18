@@ -52,14 +52,18 @@ public:
 
 class TextPainter {
 public:
-    TextPainter();
+    TextPainter(InlineSpan& text);
+    fml::RefPtr<flutter::Paragraph> paragraph();
+    void layout(double minWidth, double maxWidth);
 private:
     ParagraphStyle _createParagraphStyle(const std::optional<TextAlign> &textAlignOverride=std::nullopt);
-    fml::RefPtr<flutter::Paragraph> _createParagraph(InlineSpan &text);
+    fml::RefPtr<flutter::Paragraph> _createParagraph(InlineSpan& text);
+    double _computePaintOffsetFraction(TextAlign textAlign, TextDirection textDirection);
 private:
     TextAlign textAlign_;
     TextDirection textDirection_;
     TextScaler textScaler_;
+    InlineSpan& text_;
     bool rebuildParagraphForPaint_;
 };
 
