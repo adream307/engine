@@ -55,18 +55,18 @@ public:
 
 class TextPainter {
 public:
-    TextPainter(InlineSpan& text);
+    TextPainter(std::shared_ptr<InlineSpan> &text);
     void layout(double minWidth, double maxWidth);
-    const std::u16string& plainText() const {return text_.toPlainText();} 
+    const std::u16string& plainText() const {return text_->toPlainText();} 
 private:
     ParagraphStyle _createParagraphStyle(const std::optional<TextAlign> &textAlignOverride=std::nullopt);
-    fml::RefPtr<flutter::Paragraph> _createParagraph(InlineSpan& text);
+    fml::RefPtr<flutter::Paragraph> _createParagraph(std::shared_ptr<InlineSpan> &text);
     double _computePaintOffsetFraction(TextAlign textAlign, TextDirection textDirection);
 private:
     TextAlign textAlign_;
     TextDirection textDirection_;
     TextScaler textScaler_;
-    InlineSpan& text_;
+    std::shared_ptr<InlineSpan> text_;
     bool rebuildParagraphForPaint_;
 };
 
@@ -97,7 +97,7 @@ protected:
 
 class RenderParagraph : public RenderObject{
 public:
-    RenderParagraph(InlineSpan &text);
+    RenderParagraph(std::shared_ptr<InlineSpan> &text);
     void performLayout() override;
 
 private:
@@ -127,6 +127,8 @@ public:
 private:
     std::list<std::shared_ptr<RenderObject>> nodesNeedingLayout_;
 };
+
+void Helloworld();
 
 }
 

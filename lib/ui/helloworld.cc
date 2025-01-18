@@ -14,7 +14,7 @@ ParagraphStyle TextStyle::getParagraphStyle(const TextAlign &textAlign,
     return ParagraphStyle(textAlign, textDirection, textScaler.scale(kDefaultFontSize));
 }
 
-TextPainter::TextPainter(InlineSpan& text):
+TextPainter::TextPainter(std::shared_ptr<InlineSpan>& text):
     textAlign_(TextAlign::start),
     textDirection_(TextDirection::rtl),
     textScaler_(TextScaler::LinearTextScaler(1.0)),
@@ -58,11 +58,11 @@ ParagraphStyle TextPainter::_createParagraphStyle(const std::optional<TextAlign>
     );
 }
 
-fml::RefPtr<flutter::Paragraph> TextPainter::_createParagraph(InlineSpan& text)
+fml::RefPtr<flutter::Paragraph> TextPainter::_createParagraph(std::shared_ptr<InlineSpan>& text)
 {
     auto style = _createParagraphStyle();
     auto builder = fml::MakeRefCounted<flutter::ParagraphBuilder>(style.encoded());
-    text.build(builder);
+    text->build(builder);
     rebuildParagraphForPaint_=false;
     return builder->build2();
 }
@@ -71,7 +71,7 @@ void RenderObject::layout() {
     performLayout();
 }
 
-RenderParagraph::RenderParagraph(InlineSpan &text):textPainter_(text) {
+RenderParagraph::RenderParagraph(std::shared_ptr<InlineSpan> &text):textPainter_(text) {
 
 }
 
@@ -95,6 +95,9 @@ void PipelineOwner::flushLayout() {
     for(auto & node : nodesNeedingLayout_) {
         node->_layoutWithoutResize();
     }
+}
+
+void Helloworld() {
 }
 
 }
