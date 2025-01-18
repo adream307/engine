@@ -67,6 +67,10 @@ fml::RefPtr<flutter::Paragraph> TextPainter::_createParagraph(InlineSpan& text)
     return builder->build2();
 }
 
+void RenderObject::layout() {
+    performLayout();
+}
+
 RenderParagraph::RenderParagraph(InlineSpan &text):textPainter_(text) {
 
 }
@@ -77,6 +81,10 @@ void RenderParagraph::performLayout() {
 
 void RenderParagraph::_layoutTextWithConstraints(BoxConstraints constraints) {
     textPainter_.layout(constraints.minWidth, constraints.maxWidth);
+}
+
+void RenderPositionedBox::performLayout() {
+    child_->performLayout();
 }
 
 }

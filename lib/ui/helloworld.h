@@ -70,7 +70,8 @@ private:
     bool rebuildParagraphForPaint_;
 };
 
-class BoxConstraints {
+
+class BoxConstraints{
 public:
     BoxConstraints(double minW=0,
                    double maxW=std::numeric_limits<double>::infinity(),
@@ -83,16 +84,32 @@ public:
     double maxHeight;
 };
 
+class RenderObject {
+public:
+    RenderObject()=default;
+    ~RenderObject()=default;
+    void layout();
+    virtual void performLayout() = 0; 
+protected:
+    BoxConstraints constraints_;
+};
 
-class RenderParagraph{
+class RenderParagraph : public RenderObject{
 public:
     RenderParagraph(InlineSpan &text);
-    void performLayout();
+    void performLayout() override;
 
 private:
     void _layoutTextWithConstraints(BoxConstraints constraints);
     TextPainter textPainter_;
-    BoxConstraints constraints_;
+};
+
+class RenderPositionedBox : public RenderObject{
+public:
+    RenderPositionedBox()=default;
+    void performLayout() override;
+private:
+    std::shared_ptr<RenderObject> child_;
 };
 
 }
