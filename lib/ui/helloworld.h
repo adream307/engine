@@ -107,7 +107,7 @@ private:
 
 class RenderPositionedBox : public RenderObject{
 public:
-    RenderPositionedBox()=default;
+    RenderPositionedBox(std::shared_ptr<RenderObject> child):child_(child){}
     void performLayout() override;
 private:
     std::shared_ptr<RenderObject> child_;
