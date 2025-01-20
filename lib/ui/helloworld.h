@@ -123,9 +123,21 @@ private:
 
 class PipelineOwner {
 public:
+    PipelineOwner();
+    ~PipelineOwner()=default;
     void flushLayout();
 private:
     std::list<std::shared_ptr<RenderObject>> nodesNeedingLayout_;
+};
+
+
+class ViewRenderingFlutterBinding {
+public:
+    ViewRenderingFlutterBinding(std::shared_ptr<RenderObject> root);
+    // std::shared_ptr<PipelineOwner> createRootPipelineOwner();
+private:
+    std::shared_ptr<RenderObject> root_;
+    //std::shared_ptr<PipelineOwner> rootPipelineOwner_;
 };
 
 void Helloworld();

@@ -97,10 +97,19 @@ void PipelineOwner::flushLayout() {
     }
 }
 
+ViewRenderingFlutterBinding::ViewRenderingFlutterBinding(std::shared_ptr<RenderObject> root): root_(root){
+    //rootPipelineOwner =createRootPipelineOwner();
+}
+
+// std::shared_ptr<PipelineOwner> ViewRenderingFlutterBinding::createRootPipelineOwner(){
+//     return std::make_shared<PipelineOwner>();
+// }
+
 void Helloworld() {
     std::shared_ptr<InlineSpan> text = std::make_shared<TextSpan>(u"hello world");
     std::shared_ptr<RenderParagraph> renderParagraph = std::make_shared<RenderParagraph>(text, TextDirection::ltr);
     std::shared_ptr<RenderPositionedBox> renderPositionedBox = std::make_shared<RenderPositionedBox>(renderParagraph);
+    std::shared_ptr<ViewRenderingFlutterBinding> view = std::make_shared<ViewRenderingFlutterBinding>(renderPositionedBox);
 }
 
 }
