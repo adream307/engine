@@ -101,6 +101,7 @@ public:
     void _layoutWithoutResize() {performLayout();}
     void attach(std::shared_ptr<PipelineOwner> &owner) {owner_=owner;}
     void scheduleInitialLayout();
+    void scheduleInitialPaint(); //TODO flutter/packages/flutter/lib/src/rendering/object.dart, RenderObject.void scheduleInitialPaint(ContainerLayer rootLayer)
 protected:
     BoxConstraints constraints_;
     std::shared_ptr<PipelineOwner> owner_;
@@ -145,18 +146,22 @@ public:
     std::shared_ptr<RenderObject>& rootNode() {return rootNode_;}
     void setRootNode(std::shared_ptr<RenderObject> node);
     std::list<std::shared_ptr<RenderObject>> nodesNeedingLayout;
+    std::list<std::shared_ptr<RenderObject>> nodesNeedingPaint;
 private:
     std::shared_ptr<RenderObject> rootNode_; //render view
 };
 
 
-class ViewRenderingFlutterBinding {
+class ViewRenderingFlutterBinding: public std::enable_shared_from_this<ViewRenderingFlutterBinding> {
 public:
     ViewRenderingFlutterBinding(std::shared_ptr<RenderObject> root);
     std::shared_ptr<PipelineOwner> createRootPipelineOwner();
     std::shared_ptr<RenderView> initRenderView(std::shared_ptr<FlutterView>& view);
     ViewConfiguration createViewConfigurationFor(std::shared_ptr<RenderView> &view);
     void addRenderView(std::shared_ptr<RenderView> &);
+    void scheduleFrame();
+    void ensureFrameCallbacksRegistered();
+    void handleDrawFrame();
 private:
     std::shared_ptr<RenderObject> root_;
     std::shared_ptr<PipelineOwner> rootPipelineOwner_;

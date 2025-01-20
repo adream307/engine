@@ -1,4 +1,5 @@
 #include "flutter/lib/ui/helloworld.h"
+#include "flutter/fml/make_copyable.h"
 namespace keels{
 
 TextSpan::TextSpan(const std::u16string& text): text_(text) {
@@ -71,6 +72,10 @@ void RenderObject::scheduleInitialLayout() {
     owner_->nodesNeedingLayout.push_back(shared_from_this());
 }
 
+void RenderObject::scheduleInitialPaint() {
+    owner_->nodesNeedingPaint.push_back(shared_from_this());
+}
+
 RenderParagraph::RenderParagraph(std::shared_ptr<InlineSpan> &text, TextDirection textDirection)
     :textPainter_(text,textDirection) {
 }
@@ -97,6 +102,7 @@ void RenderView::performLayout() {
 
 void RenderView::prepareInitialFrame() {
     scheduleInitialLayout();
+    scheduleInitialPaint();
 } 
 
 void PipelineOwner::flushLayout() {
@@ -113,6 +119,8 @@ void PipelineOwner::setRootNode(std::shared_ptr<RenderObject> node) {
 
 ViewRenderingFlutterBinding::ViewRenderingFlutterBinding(std::shared_ptr<RenderObject> root): root_(root){
     rootPipelineOwner_=createRootPipelineOwner();
+    auto flutterView = keels::PlatformDispatcher::instance().implicitView();
+    auto renderView = initRenderView(flutterView);
 }
 
 std::shared_ptr<PipelineOwner> ViewRenderingFlutterBinding::createRootPipelineOwner(){
@@ -147,6 +155,18 @@ void ViewRenderingFlutterBinding::addRenderView(std::shared_ptr<RenderView> &vie
     int64_t id = view->flutterView()->viewId();
     view->configuration = createViewConfigurationFor(view);
     viewIdToRenderView_[id]=view;
+}
+
+void ViewRenderingFlutterBinding::ensureFrameCallbacksRegistered() {
+    std::shared_ptr<ViewRenderingFlutterBinding> ptr = shared_from_this();
+    auto draw_frame = fml::MakeCopyable([ptr](){
+        ptr->handleDrawFrame();
+    });
+    PlatformDispatcher::instance().SetOnDrawFrame(draw_frame);
+}
+
+void ViewRenderingFlutterBinding::handleDrawFrame() {
+
 }
 
 void Helloworld() {
