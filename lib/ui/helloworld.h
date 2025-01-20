@@ -92,7 +92,7 @@ public:
     double devicePixelRatio;
 };
 
-class RenderObject {
+class RenderObject : public std::enable_shared_from_this<RenderObject>{
 public:
     RenderObject()=default;
     virtual ~RenderObject()=default;
@@ -129,6 +129,7 @@ public:
     RenderView(std::shared_ptr<FlutterView> &view);
     void performLayout() override;
     std::shared_ptr<FlutterView>& flutterView() {return view_;}
+    void scheduleInitialLayout();
     ViewConfiguration configuration;
 private:
     std::shared_ptr<RenderObject> child_;
@@ -142,8 +143,8 @@ public:
     void flushLayout();
     std::shared_ptr<RenderObject>& rootNode() {return rootNode_;}
     void setRootNode(std::shared_ptr<RenderObject> node);
+    std::list<std::shared_ptr<RenderObject>> nodesNeedingLayout;
 private:
-    std::list<std::shared_ptr<RenderObject>> nodesNeedingLayout_;
     std::shared_ptr<RenderObject> rootNode_; //render view
 };
 

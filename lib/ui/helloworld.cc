@@ -95,8 +95,12 @@ void RenderView::performLayout() {
     child_->performLayout();
 }
 
+void RenderView::scheduleInitialLayout() {
+    owner_->nodesNeedingLayout.push_back(shared_from_this());
+}
+
 void PipelineOwner::flushLayout() {
-    for(auto & node : nodesNeedingLayout_) {
+    for(auto & node : nodesNeedingLayout) {
         node->_layoutWithoutResize();
     }
 }
