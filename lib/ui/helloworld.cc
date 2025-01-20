@@ -14,9 +14,9 @@ ParagraphStyle TextStyle::getParagraphStyle(const TextAlign &textAlign,
     return ParagraphStyle(textAlign, textDirection, textScaler.scale(kDefaultFontSize));
 }
 
-TextPainter::TextPainter(std::shared_ptr<InlineSpan>& text):
+TextPainter::TextPainter(std::shared_ptr<InlineSpan>& text, TextDirection textDirection):
     textAlign_(TextAlign::start),
-    textDirection_(TextDirection::rtl),
+    textDirection_(textDirection),
     textScaler_(TextScaler::LinearTextScaler(1.0)),
     text_(text)
 {
@@ -71,8 +71,8 @@ void RenderObject::layout() {
     performLayout();
 }
 
-RenderParagraph::RenderParagraph(std::shared_ptr<InlineSpan> &text):textPainter_(text) {
-
+RenderParagraph::RenderParagraph(std::shared_ptr<InlineSpan> &text, TextDirection textDirection)
+    :textPainter_(text,textDirection) {
 }
 
 void RenderParagraph::performLayout() {
@@ -99,7 +99,7 @@ void PipelineOwner::flushLayout() {
 
 void Helloworld() {
     std::shared_ptr<InlineSpan> text = std::make_shared<TextSpan>(u"hello world");
-    std::shared_ptr<RenderParagraph> renderParagraph = std::make_shared<RenderParagraph>(text);
+    std::shared_ptr<RenderParagraph> renderParagraph = std::make_shared<RenderParagraph>(text, TextDirection::ltr);
 }
 
 }

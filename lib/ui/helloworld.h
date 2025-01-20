@@ -55,7 +55,7 @@ public:
 
 class TextPainter {
 public:
-    TextPainter(std::shared_ptr<InlineSpan> &text);
+    TextPainter(std::shared_ptr<InlineSpan> &text, TextDirection textDirection);
     void layout(double minWidth, double maxWidth);
     const std::u16string& plainText() const {return text_->toPlainText();} 
 private:
@@ -97,7 +97,7 @@ protected:
 
 class RenderParagraph : public RenderObject{
 public:
-    RenderParagraph(std::shared_ptr<InlineSpan> &text);
+    RenderParagraph(std::shared_ptr<InlineSpan> &text, TextDirection textDirection);
     void performLayout() override;
 
 private:
