@@ -87,7 +87,7 @@ public:
 class RenderObject {
 public:
     RenderObject()=default;
-    ~RenderObject()=default;
+    virtual ~RenderObject()=default;
     void layout();
     virtual void performLayout() = 0;
     void _layoutWithoutResize() {performLayout();}

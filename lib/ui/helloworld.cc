@@ -99,6 +99,7 @@ void PipelineOwner::flushLayout() {
 
 void Helloworld() {
     std::shared_ptr<InlineSpan> text = std::make_shared<TextSpan>(u"hello world");
+    std::shared_ptr<RenderParagraph> renderParagraph = std::make_shared<RenderParagraph>(text);
 }
 
 }
