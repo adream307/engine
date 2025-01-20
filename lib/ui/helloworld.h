@@ -123,7 +123,7 @@ private:
 
 class PipelineOwner {
 public:
-    PipelineOwner();
+    PipelineOwner()=default;
     ~PipelineOwner()=default;
     void flushLayout();
 private:
@@ -134,10 +134,10 @@ private:
 class ViewRenderingFlutterBinding {
 public:
     ViewRenderingFlutterBinding(std::shared_ptr<RenderObject> root);
-    // std::shared_ptr<PipelineOwner> createRootPipelineOwner();
+    std::shared_ptr<PipelineOwner> createRootPipelineOwner();
 private:
     std::shared_ptr<RenderObject> root_;
-    //std::shared_ptr<PipelineOwner> rootPipelineOwner_;
+    std::shared_ptr<PipelineOwner> rootPipelineOwner_;
 };
 
 void Helloworld();

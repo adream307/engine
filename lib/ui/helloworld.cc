@@ -98,12 +98,12 @@ void PipelineOwner::flushLayout() {
 }
 
 ViewRenderingFlutterBinding::ViewRenderingFlutterBinding(std::shared_ptr<RenderObject> root): root_(root){
-    //rootPipelineOwner =createRootPipelineOwner();
+    rootPipelineOwner_=createRootPipelineOwner();
 }
 
-// std::shared_ptr<PipelineOwner> ViewRenderingFlutterBinding::createRootPipelineOwner(){
-//     return std::make_shared<PipelineOwner>();
-// }
+std::shared_ptr<PipelineOwner> ViewRenderingFlutterBinding::createRootPipelineOwner(){
+    return std::make_shared<PipelineOwner>();
+}
 
 void Helloworld() {
     std::shared_ptr<InlineSpan> text = std::make_shared<TextSpan>(u"hello world");
