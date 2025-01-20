@@ -88,6 +88,10 @@ void RenderParagraph::_layoutTextWithConstraints(BoxConstraints constraints) {
     textPainter_.layout(constraints.minWidth, constraints.maxWidth);
 }
 
+RenderPositionedBox::RenderPositionedBox(std::shared_ptr<RenderObject> child) {
+    child_ = child;
+}
+
 void RenderPositionedBox::performLayout() {
     child_->performLayout();
 }

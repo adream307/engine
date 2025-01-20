@@ -105,6 +105,7 @@ public:
 protected:
     BoxConstraints constraints_;
     std::shared_ptr<PipelineOwner> owner_;
+    std::shared_ptr<RenderObject> child_;
 
 };
 
@@ -120,10 +121,8 @@ private:
 
 class RenderPositionedBox : public RenderObject{
 public:
-    RenderPositionedBox(std::shared_ptr<RenderObject> child):child_(child){}
+    RenderPositionedBox(std::shared_ptr<RenderObject> child);
     void performLayout() override;
-private:
-    std::shared_ptr<RenderObject> child_;
 };
 
 class RenderView : public RenderObject{
@@ -134,7 +133,6 @@ public:
     void prepareInitialFrame();
     ViewConfiguration configuration;
 private:
-    std::shared_ptr<RenderObject> child_;
     std::shared_ptr<FlutterView> view_;
 };
 
