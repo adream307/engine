@@ -15,6 +15,7 @@ public:
     double devicePixelRatio() const { return view_metrics_.device_pixel_ratio;}
     Size physicalSize() const {return Size(view_metrics_.physical_width, view_metrics_.physical_height);}
     flutter::ViewportMetrics& view_metrics() {return view_metrics_;}
+    int64_t viewId()const {return view_id_;} 
     void render(fml::RefPtr<flutter::Scene> scene, std::optional<Size> size=std::nullopt);
 private:
     int64_t view_id_;

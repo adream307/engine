@@ -84,6 +84,13 @@ public:
     double maxHeight;
 };
 
+class ViewConfiguration{
+public:
+    BoxConstraints physicalConstraints;
+    BoxConstraints logicalConstraints;
+    double devicePixelRatio;
+};
+
 class RenderObject {
 public:
     RenderObject()=default;
@@ -115,10 +122,13 @@ private:
 
 class RenderView : public RenderObject{
 public:
-    RenderView()=default;
+    RenderView(std::shared_ptr<FlutterView> &view);
     void performLayout() override;
+    std::shared_ptr<FlutterView>& flutterView() {return view_;}
+    ViewConfiguration configuration;
 private:
     std::shared_ptr<RenderObject> child_;
+    std::shared_ptr<FlutterView> view_;
 };
 
 class PipelineOwner {
@@ -126,6 +136,7 @@ public:
     PipelineOwner()=default;
     ~PipelineOwner()=default;
     void flushLayout();
+    std::shared_ptr<RenderView> rootNode;
 private:
     std::list<std::shared_ptr<RenderObject>> nodesNeedingLayout_;
 };
@@ -135,9 +146,13 @@ class ViewRenderingFlutterBinding {
 public:
     ViewRenderingFlutterBinding(std::shared_ptr<RenderObject> root);
     std::shared_ptr<PipelineOwner> createRootPipelineOwner();
+    std::shared_ptr<RenderView> initRenderView(std::shared_ptr<FlutterView>& view);
+    ViewConfiguration createViewConfigurationFor(std::shared_ptr<RenderView> &view);
+    void addRenderView(std::shared_ptr<RenderView> &);
 private:
     std::shared_ptr<RenderObject> root_;
     std::shared_ptr<PipelineOwner> rootPipelineOwner_;
+    std::unordered_map<int64_t, std::shared_ptr<RenderView>> viewIdToRenderView_;
 };
 
 void Helloworld();

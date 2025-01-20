@@ -87,6 +87,10 @@ void RenderPositionedBox::performLayout() {
     child_->performLayout();
 }
 
+RenderView::RenderView(std::shared_ptr<FlutterView> &view):view_(view)
+{
+}
+
 void RenderView::performLayout() {
     child_->performLayout();
 }
@@ -103,6 +107,35 @@ ViewRenderingFlutterBinding::ViewRenderingFlutterBinding(std::shared_ptr<RenderO
 
 std::shared_ptr<PipelineOwner> ViewRenderingFlutterBinding::createRootPipelineOwner(){
     return std::make_shared<PipelineOwner>();
+}
+
+std::shared_ptr<RenderView> ViewRenderingFlutterBinding::initRenderView(std::shared_ptr<FlutterView>& view) {
+    auto renderView = std::make_shared<RenderView>(view);
+    rootPipelineOwner_->rootNode = renderView;
+    addRenderView(renderView);
+    return renderView;
+}
+
+ViewConfiguration ViewRenderingFlutterBinding::createViewConfigurationFor(std::shared_ptr<RenderView> &view) {
+    Size physicalSize = view->flutterView()->physicalSize();
+    ViewConfiguration cfg;
+    cfg.devicePixelRatio = view->flutterView()->devicePixelRatio();
+    cfg.physicalConstraints.minWidth = physicalSize.width;
+    cfg.physicalConstraints.maxWidth = physicalSize.width;
+    cfg.physicalConstraints.minHeight = physicalSize.height;
+    cfg.physicalConstraints.maxHeight = physicalSize.height;
+    cfg.logicalConstraints.minWidth = physicalSize.width/cfg.devicePixelRatio;
+    cfg.logicalConstraints.maxWidth = physicalSize.width/cfg.devicePixelRatio;
+    cfg.logicalConstraints.minHeight = physicalSize.height/cfg.devicePixelRatio;
+    cfg.logicalConstraints.maxHeight = physicalSize.height/cfg.devicePixelRatio;
+    
+    return cfg;
+}
+
+void ViewRenderingFlutterBinding::addRenderView(std::shared_ptr<RenderView> &view) {
+    int64_t id = view->flutterView()->viewId();
+    view->configuration = createViewConfigurationFor(view);
+    viewIdToRenderView_[id]=view;
 }
 
 void Helloworld() {
