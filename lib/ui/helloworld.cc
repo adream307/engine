@@ -67,8 +67,8 @@ fml::RefPtr<flutter::Paragraph> TextPainter::_createParagraph(std::shared_ptr<In
     return builder->build2();
 }
 
-void RenderObject::layout() {
-    performLayout();
+void RenderObject::scheduleInitialLayout() {
+    owner_->nodesNeedingLayout.push_back(shared_from_this());
 }
 
 RenderParagraph::RenderParagraph(std::shared_ptr<InlineSpan> &text, TextDirection textDirection)
@@ -95,9 +95,9 @@ void RenderView::performLayout() {
     child_->performLayout();
 }
 
-void RenderView::scheduleInitialLayout() {
-    owner_->nodesNeedingLayout.push_back(shared_from_this());
-}
+void RenderView::prepareInitialFrame() {
+    scheduleInitialLayout();
+} 
 
 void PipelineOwner::flushLayout() {
     for(auto & node : nodesNeedingLayout) {
@@ -123,6 +123,7 @@ std::shared_ptr<RenderView> ViewRenderingFlutterBinding::initRenderView(std::sha
     auto renderView = std::make_shared<RenderView>(view);
     rootPipelineOwner_->setRootNode(renderView);
     addRenderView(renderView);
+    renderView->prepareInitialFrame();
     return renderView;
 }
 

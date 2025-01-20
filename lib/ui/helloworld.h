@@ -96,10 +96,11 @@ class RenderObject : public std::enable_shared_from_this<RenderObject>{
 public:
     RenderObject()=default;
     virtual ~RenderObject()=default;
-    void layout();
+    void layout() {performLayout();}
     virtual void performLayout() = 0;
     void _layoutWithoutResize() {performLayout();}
     void attach(std::shared_ptr<PipelineOwner> &owner) {owner_=owner;}
+    void scheduleInitialLayout();
 protected:
     BoxConstraints constraints_;
     std::shared_ptr<PipelineOwner> owner_;
@@ -129,7 +130,7 @@ public:
     RenderView(std::shared_ptr<FlutterView> &view);
     void performLayout() override;
     std::shared_ptr<FlutterView>& flutterView() {return view_;}
-    void scheduleInitialLayout();
+    void prepareInitialFrame();
     ViewConfiguration configuration;
 private:
     std::shared_ptr<RenderObject> child_;
