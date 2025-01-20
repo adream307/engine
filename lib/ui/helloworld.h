@@ -17,6 +17,7 @@ namespace keels
 {
 
 const inline double kDefaultFontSize = 14.0;
+class PipelineOwner;
 
 class InlineSpan {
 public:
@@ -98,8 +99,11 @@ public:
     void layout();
     virtual void performLayout() = 0;
     void _layoutWithoutResize() {performLayout();}
+    void attach(std::shared_ptr<PipelineOwner> &owner) {owner_=owner;}
 protected:
     BoxConstraints constraints_;
+    std::shared_ptr<PipelineOwner> owner_;
+
 };
 
 class RenderParagraph : public RenderObject{
@@ -131,14 +135,16 @@ private:
     std::shared_ptr<FlutterView> view_;
 };
 
-class PipelineOwner {
+class PipelineOwner: public std::enable_shared_from_this<PipelineOwner> {
 public:
     PipelineOwner()=default;
     ~PipelineOwner()=default;
     void flushLayout();
-    std::shared_ptr<RenderView> rootNode;
+    std::shared_ptr<RenderObject>& rootNode() {return rootNode_;}
+    void setRootNode(std::shared_ptr<RenderObject> node);
 private:
     std::list<std::shared_ptr<RenderObject>> nodesNeedingLayout_;
+    std::shared_ptr<RenderObject> rootNode_; //render view
 };
 
 

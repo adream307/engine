@@ -101,6 +101,12 @@ void PipelineOwner::flushLayout() {
     }
 }
 
+void PipelineOwner::setRootNode(std::shared_ptr<RenderObject> node) {
+    rootNode_ = node;
+    std::shared_ptr<PipelineOwner> ptr = shared_from_this();
+    node->attach(ptr);
+}
+
 ViewRenderingFlutterBinding::ViewRenderingFlutterBinding(std::shared_ptr<RenderObject> root): root_(root){
     rootPipelineOwner_=createRootPipelineOwner();
 }
@@ -111,7 +117,7 @@ std::shared_ptr<PipelineOwner> ViewRenderingFlutterBinding::createRootPipelineOw
 
 std::shared_ptr<RenderView> ViewRenderingFlutterBinding::initRenderView(std::shared_ptr<FlutterView>& view) {
     auto renderView = std::make_shared<RenderView>(view);
-    rootPipelineOwner_->rootNode = renderView;
+    rootPipelineOwner_->setRootNode(renderView);
     addRenderView(renderView);
     return renderView;
 }
