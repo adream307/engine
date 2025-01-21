@@ -89,7 +89,7 @@ void RenderParagraph::_layoutTextWithConstraints(BoxConstraints constraints) {
 }
 
 RenderPositionedBox::RenderPositionedBox(std::shared_ptr<RenderObject> child) {
-    child_ = child;
+    setChild(child);
 }
 
 void RenderPositionedBox::performLayout() {
@@ -125,6 +125,8 @@ ViewRenderingFlutterBinding::ViewRenderingFlutterBinding(std::shared_ptr<RenderO
     rootPipelineOwner_=createRootPipelineOwner();
     auto flutterView = keels::PlatformDispatcher::instance().implicitView();
     auto renderView = initRenderView(flutterView);
+    renderView->setChild(root);
+    root_ = nullptr;
 }
 
 std::shared_ptr<PipelineOwner> ViewRenderingFlutterBinding::createRootPipelineOwner(){

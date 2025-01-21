@@ -100,13 +100,14 @@ public:
     virtual void performLayout() = 0;
     void _layoutWithoutResize() {performLayout();}
     void attach(std::shared_ptr<PipelineOwner> &owner) {owner_=owner;}
+    void setChild(std::shared_ptr<RenderObject> child) {child_ = child;}
+    std::shared_ptr<RenderObject>& child() {return child_;}
     void scheduleInitialLayout();
     void scheduleInitialPaint(); //TODO flutter/packages/flutter/lib/src/rendering/object.dart, RenderObject.void scheduleInitialPaint(ContainerLayer rootLayer)
 protected:
     BoxConstraints constraints_;
     std::shared_ptr<PipelineOwner> owner_;
     std::shared_ptr<RenderObject> child_;
-
 };
 
 class RenderParagraph : public RenderObject{
