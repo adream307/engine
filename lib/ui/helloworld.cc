@@ -1,5 +1,6 @@
 #include "flutter/lib/ui/helloworld.h"
 #include "flutter/fml/make_copyable.h"
+#include "flutter/lib/ui/floating_point.h"
 #include <iostream>
 #include <thread>
 namespace keels{
@@ -71,6 +72,33 @@ fml::RefPtr<flutter::Paragraph> TextPainter::_createParagraph(std::shared_ptr<In
     return builder->build2();
 }
 
+
+void PaintingContext::repaintCompositedChild(std::shared_ptr<RenderObject> &child) {
+    auto childContex = PaintingContext{};
+    Offset zero(0.0,0.0);
+    child->paint(childContex, zero);
+}
+
+void PaintingContext::paintChild(std::shared_ptr<RenderObject>& child, Offset &offset) {
+    child->paint(*this, offset);
+}
+
+fml::RefPtr<flutter::Canvas> PaintingContext::getCanvas() {
+    if(canvas_) {
+        return canvas_;
+    }
+    fml::RefPtr<flutter::PictureRecorder> recorder = fml::MakeRefCounted<flutter::PictureRecorder>();
+    auto rect = Rect::largest();
+
+    canvas_ = fml::MakeRefCounted<flutter::Canvas>(recorder->BeginRecording(
+                 SkRect::MakeLTRB(flutter::SafeNarrow(rect.left), 
+                                  flutter::SafeNarrow(rect.top), 
+                                  flutter::SafeNarrow(rect.right),
+                                  flutter::SafeNarrow(rect.bottom))));
+    recorder->set_canvas(canvas_);
+    return canvas_;
+}
+
 void RenderObject::scheduleInitialLayout() {
     owner_->nodesNeedingLayout.push_back(shared_from_this());
 }
@@ -89,11 +117,15 @@ RenderParagraph::RenderParagraph(std::shared_ptr<InlineSpan> &text, TextDirectio
 }
 
 void RenderParagraph::performLayout() {
-    _layoutTextWithConstraints(constraints_);
+    _layoutTextWithConstraints(constraints_.loosen());
 }
 
 void RenderParagraph::_layoutTextWithConstraints(BoxConstraints constraints) {
     textPainter_.layout(constraints.minWidth, constraints.maxWidth);
+}
+
+void RenderParagraph::paint(PaintingContext &context, Offset &offset) {
+
 }
 
 RenderPositionedBox::RenderPositionedBox(std::shared_ptr<RenderObject> child) {
@@ -101,7 +133,7 @@ RenderPositionedBox::RenderPositionedBox(std::shared_ptr<RenderObject> child) {
 }
 
 void RenderPositionedBox::performLayout() {
-    child_->layout(constraints_);
+    child_->layout(constraints_.loosen());
 }
 
 RenderView::RenderView(std::shared_ptr<FlutterView> &view):view_(view)
@@ -115,11 +147,17 @@ void RenderView::performLayout() {
 void RenderView::prepareInitialFrame() {
     scheduleInitialLayout();
     scheduleInitialPaint();
-} 
+}
 
 void PipelineOwner::flushLayout() {
     for(auto & node : nodesNeedingLayout) {
         node->_layoutWithoutResize();
+    }
+}
+
+void PipelineOwner::flushPaint() {
+    for(auto & node : nodesNeedingPaint) {
+        PaintingContext::repaintCompositedChild(node);
     }
 }
 
@@ -185,6 +223,7 @@ void ViewRenderingFlutterBinding::ensureFrameCallbacksRegistered() {
 
 void ViewRenderingFlutterBinding::handleDrawFrame() {
     rootPipelineOwner_->flushLayout();
+    rootPipelineOwner_->flushPaint();
 }
 
 void Helloworld() {

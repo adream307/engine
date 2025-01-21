@@ -9,8 +9,10 @@ struct Size{
     double height;
 };
 
+constexpr double _giantScalar = 1.0E+9;
 struct Rect{
     Rect(double l, double t, double r, double b):left(l),top(t),right(r),bottom(b){}
+    static Rect largest() {return Rect(-_giantScalar, -_giantScalar, _giantScalar, _giantScalar); }
     double width() const {return right-left;}
     double height() const {return bottom-top;}
     Size size() const {return Size(width(), height());}

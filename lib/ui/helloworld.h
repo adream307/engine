@@ -7,10 +7,8 @@
 #include "flutter/lib/ui/text/paragraph_builder.h"
 #include "flutter/lib/ui/painting/picture_recorder.h"
 #include "flutter/lib/ui/painting/canvas.h"
-// #include "flutter/lib/ui/floating_point.h"
 #include "flutter/lib/ui/compositing/scene_builder.h"
 #include "flutter/lib/ui/geometry.h"
-#include "flutter/lib/ui/painting.h"
 #include <limits>
 
 namespace keels
@@ -18,6 +16,7 @@ namespace keels
 
 const inline double kDefaultFontSize = 14.0;
 class PipelineOwner;
+class RenderObject;
 
 class InlineSpan {
 public:
@@ -72,6 +71,15 @@ private:
 };
 
 
+class PaintingContext {
+public:
+    static void repaintCompositedChild(std::shared_ptr<RenderObject> &child);
+    void paintChild(std::shared_ptr<RenderObject>& child, Offset &offset);
+    fml::RefPtr<flutter::Canvas> getCanvas();
+private:
+    fml::RefPtr<flutter::Canvas> canvas_ = nullptr;
+};
+
 class BoxConstraints{
 public:
     BoxConstraints(double minW=0,
@@ -79,6 +87,7 @@ public:
                    double minH=0,
                    double maxH=std::numeric_limits<double>::infinity())
                    :minWidth(minW),maxWidth(maxW),minHeight(minH),maxHeight(maxH){}
+    BoxConstraints loosen() {return BoxConstraints(0,maxWidth,0,maxHeight);}
     double minWidth;
     double maxWidth;
     double minHeight;
@@ -102,6 +111,7 @@ public:
     void attach(std::shared_ptr<PipelineOwner> &owner) {owner_=owner;}
     void setChild(std::shared_ptr<RenderObject> child) {child_ = child;}
     std::shared_ptr<RenderObject>& child() {return child_;}
+    virtual void paint(PaintingContext &context, Offset &offset){context.paintChild(child_,offset);}
     void scheduleInitialLayout();
     void scheduleInitialPaint(); //TODO flutter/packages/flutter/lib/src/rendering/object.dart, RenderObject.void scheduleInitialPaint(ContainerLayer rootLayer)
 protected:
@@ -114,6 +124,7 @@ class RenderParagraph : public RenderObject{
 public:
     RenderParagraph(std::shared_ptr<InlineSpan> &text, TextDirection textDirection);
     void performLayout() override;
+    void paint(PaintingContext &context, Offset &offset) override;
 
 private:
     void _layoutTextWithConstraints(BoxConstraints constraints);
@@ -142,6 +153,7 @@ public:
     PipelineOwner()=default;
     ~PipelineOwner()=default;
     void flushLayout();
+    void flushPaint();
     std::shared_ptr<RenderObject>& rootNode() {return rootNode_;}
     void setRootNode(std::shared_ptr<RenderObject> node);
     std::list<std::shared_ptr<RenderObject>> nodesNeedingLayout;
