@@ -27,7 +27,7 @@
 #include "flutter/lib/ui/text/paragraph_builder.h"
 #include "flutter/lib/ui/painting/picture_recorder.h"
 #include "flutter/lib/ui/painting/canvas.h"
-#include "flutter/lib/ui/floating_point.h"
+// #include "flutter/lib/ui/floating_point.h"
 #include "flutter/lib/ui/compositing/scene_builder.h"
 #include "flutter/lib/ui/geometry.h"
 #include "flutter/lib/ui/painting.h"
@@ -492,60 +492,64 @@ bool RuntimeController::LaunchCapsule(
   // keels::Helloworld();
 
   auto view = keels::PlatformDispatcher::instance().implicitView();
+  context_.task_runners.GetUITaskRunner()->PostTask(fml::MakeCopyable([]()mutable{
+      keels::Helloworld();
+  }));
+
 
   
-  context_.task_runners.GetUITaskRunner()->PostTask(
-    fml::MakeCopyable( [&]()mutable{
-      std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",======================== run capsule main =================" << std::endl;
-      auto begin_frame = fml::MakeCopyable([&](int microseconds) {
-          auto view = keels::PlatformDispatcher::instance().implicitView();
-          std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", closure begin frame:" << microseconds << std::endl;
-          double devicePixelRatio = view->devicePixelRatio();
-          auto logicalSize = view->physicalSize();
-          logicalSize.width /= devicePixelRatio;
-          logicalSize.height /= devicePixelRatio;
-          auto pstyle = keels::ParagraphStyle(std::nullopt, keels::TextDirection::ltr, std::nullopt);
-          fml::RefPtr<ParagraphBuilder> paragraphBuilder = fml::MakeRefCounted<ParagraphBuilder>(pstyle.encoded());
-          paragraphBuilder->addText2(u"Hello world");
-          auto paragraph = paragraphBuilder->build2();
-          paragraph->layout(logicalSize.width);
+  // context_.task_runners.GetUITaskRunner()->PostTask(
+  //   fml::MakeCopyable( [&]()mutable{
+  //     std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",======================== run capsule main =================" << std::endl;
+  //     auto begin_frame = fml::MakeCopyable([&](int microseconds) {
+  //         auto view = keels::PlatformDispatcher::instance().implicitView();
+  //         std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", closure begin frame:" << microseconds << std::endl;
+  //         double devicePixelRatio = view->devicePixelRatio();
+  //         auto logicalSize = view->physicalSize();
+  //         logicalSize.width /= devicePixelRatio;
+  //         logicalSize.height /= devicePixelRatio;
+  //         auto pstyle = keels::ParagraphStyle(std::nullopt, keels::TextDirection::ltr, std::nullopt);
+  //         fml::RefPtr<ParagraphBuilder> paragraphBuilder = fml::MakeRefCounted<ParagraphBuilder>(pstyle.encoded());
+  //         paragraphBuilder->addText2(u"Hello world");
+  //         auto paragraph = paragraphBuilder->build2();
+  //         paragraph->layout(logicalSize.width);
 
-          keels::Rect physicalBounds(0.0,0.0,logicalSize.width*devicePixelRatio,logicalSize.height*devicePixelRatio);
-          std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",physicalBounds"
-                    << ",left=" << physicalBounds.left
-                    << ",top=" << physicalBounds.top
-                    << ",right=" << physicalBounds.right
-                    << ",bottom=" << physicalBounds.bottom << std::endl;
+  //         keels::Rect physicalBounds(0.0,0.0,logicalSize.width*devicePixelRatio,logicalSize.height*devicePixelRatio);
+  //         std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",physicalBounds"
+  //                   << ",left=" << physicalBounds.left
+  //                   << ",top=" << physicalBounds.top
+  //                   << ",right=" << physicalBounds.right
+  //                   << ",bottom=" << physicalBounds.bottom << std::endl;
 
-          fml::RefPtr<PictureRecorder> recorder = fml::MakeRefCounted<PictureRecorder>();
-          fml::RefPtr<Canvas> canvas =
-            fml::MakeRefCounted<Canvas>(recorder->BeginRecording(
-                SkRect::MakeLTRB(SafeNarrow(physicalBounds.left), SafeNarrow(physicalBounds.top), SafeNarrow(physicalBounds.right),SafeNarrow(physicalBounds.bottom))));
-          recorder->set_canvas(canvas);
-          canvas->scale(devicePixelRatio,devicePixelRatio);
-          keels::Offset offset(logicalSize.width-paragraph->maxIntrinsicWidth(), logicalSize.height-paragraph->height());
-          offset.dx /= 2.0;
-          offset.dy /= 2.0;
+  //         fml::RefPtr<PictureRecorder> recorder = fml::MakeRefCounted<PictureRecorder>();
+  //         fml::RefPtr<Canvas> canvas =
+  //           fml::MakeRefCounted<Canvas>(recorder->BeginRecording(
+  //               SkRect::MakeLTRB(SafeNarrow(physicalBounds.left), SafeNarrow(physicalBounds.top), SafeNarrow(physicalBounds.right),SafeNarrow(physicalBounds.bottom))));
+  //         recorder->set_canvas(canvas);
+  //         canvas->scale(devicePixelRatio,devicePixelRatio);
+  //         keels::Offset offset(logicalSize.width-paragraph->maxIntrinsicWidth(), logicalSize.height-paragraph->height());
+  //         offset.dx /= 2.0;
+  //         offset.dy /= 2.0;
 
-          std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",offset," << "dx="<< offset.dx <<",dy=" << offset.dy << std::endl;
-          paragraph->paint(canvas.get(), offset.dx, offset.dy);
-          auto picture = recorder->endRecording2();
-          fml::RefPtr<SceneBuilder> sceneBuilder = fml::MakeRefCounted<SceneBuilder>();
-          auto layer = sceneBuilder->pushClipRect2(physicalBounds.left,physicalBounds.right,physicalBounds.top,physicalBounds.bottom,flutter::Clip::kAntiAlias);
+  //         std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",offset," << "dx="<< offset.dx <<",dy=" << offset.dy << std::endl;
+  //         paragraph->paint(canvas.get(), offset.dx, offset.dy);
+  //         auto picture = recorder->endRecording2();
+  //         fml::RefPtr<SceneBuilder> sceneBuilder = fml::MakeRefCounted<SceneBuilder>();
+  //         auto layer = sceneBuilder->pushClipRect2(physicalBounds.left,physicalBounds.right,physicalBounds.top,physicalBounds.bottom,flutter::Clip::kAntiAlias);
 
-          bool isComplexHint = false;
-          bool willChangeHint = false;
-          int hints = (isComplexHint ? 1 : 0) | (willChangeHint ? 2 : 0);
-          sceneBuilder->addPicture(0.0, 0.0, picture.get(), hints);
-          sceneBuilder->pop();
-          auto scene = sceneBuilder->build2();
-          view->render(scene);
-        });
+  //         bool isComplexHint = false;
+  //         bool willChangeHint = false;
+  //         int hints = (isComplexHint ? 1 : 0) | (willChangeHint ? 2 : 0);
+  //         sceneBuilder->addPicture(0.0, 0.0, picture.get(), hints);
+  //         sceneBuilder->pop();
+  //         auto scene = sceneBuilder->build2();
+  //         view->render(scene);
+  //       });
 
-    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", set begin frame"  << std::endl;
-    keels::PlatformDispatcher::instance().SetOnBeginFrame(begin_frame);
+  //   std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", set begin frame"  << std::endl;
+  //   keels::PlatformDispatcher::instance().SetOnBeginFrame(begin_frame);
 
-    }));
+  //   }));
 
   return true;
 }

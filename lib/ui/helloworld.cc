@@ -1,5 +1,7 @@
 #include "flutter/lib/ui/helloworld.h"
 #include "flutter/fml/make_copyable.h"
+#include <iostream>
+#include <thread>
 namespace keels{
 
 TextSpan::TextSpan(const std::u16string& text): text_(text) {
@@ -185,6 +187,7 @@ void ViewRenderingFlutterBinding::handleDrawFrame() {
 }
 
 void Helloworld() {
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",====================== run Helloworld ======================" << std::endl;
     std::shared_ptr<InlineSpan> text = std::make_shared<TextSpan>(u"hello world");
     std::shared_ptr<RenderParagraph> renderParagraph = std::make_shared<RenderParagraph>(text, TextDirection::ltr);
     std::shared_ptr<RenderPositionedBox> renderPositionedBox = std::make_shared<RenderPositionedBox>(renderParagraph);
