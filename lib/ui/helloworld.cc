@@ -172,7 +172,7 @@ void ViewRenderingFlutterBinding::ensureFrameCallbacksRegistered() {
 }
 
 void ViewRenderingFlutterBinding::handleDrawFrame() {
-
+    rootPipelineOwner_->flushLayout();
 }
 
 void Helloworld() {
