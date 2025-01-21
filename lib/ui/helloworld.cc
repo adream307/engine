@@ -32,6 +32,7 @@ void TextPainter::layout(double minWidth, double maxWidth)
     double layoutMaxWidth = maxWidth;
     auto paragraph = _createParagraph(text_);
     paragraph->layout(layoutMaxWidth);
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", layout with width = " << layoutMaxWidth << std::endl;
     //TODO: flutter/packages/flutter/lib/src/painting/text_painter.dart: 1192
 }
 
@@ -100,7 +101,7 @@ RenderPositionedBox::RenderPositionedBox(std::shared_ptr<RenderObject> child) {
 }
 
 void RenderPositionedBox::performLayout() {
-    child_->performLayout();
+    child_->layout(constraints_);
 }
 
 RenderView::RenderView(std::shared_ptr<FlutterView> &view):view_(view)
