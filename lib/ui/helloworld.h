@@ -96,7 +96,7 @@ class RenderObject : public std::enable_shared_from_this<RenderObject>{
 public:
     RenderObject()=default;
     virtual ~RenderObject()=default;
-    void layout() {performLayout();}
+    void layout(const BoxConstraints &constraints);
     virtual void performLayout() = 0;
     void _layoutWithoutResize() {performLayout();}
     void attach(std::shared_ptr<PipelineOwner> &owner) {owner_=owner;}

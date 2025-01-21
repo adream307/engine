@@ -76,6 +76,11 @@ void RenderObject::scheduleInitialPaint() {
     owner_->nodesNeedingPaint.push_back(shared_from_this());
 }
 
+void RenderObject::layout(const BoxConstraints &constraints) {
+    constraints_ = constraints;
+    performLayout();
+}
+
 RenderParagraph::RenderParagraph(std::shared_ptr<InlineSpan> &text, TextDirection textDirection)
     :textPainter_(text,textDirection) {
 }
@@ -101,7 +106,7 @@ RenderView::RenderView(std::shared_ptr<FlutterView> &view):view_(view)
 }
 
 void RenderView::performLayout() {
-    child_->performLayout();
+    child_->layout(configuration.logicalConstraints);
 }
 
 void RenderView::prepareInitialFrame() {
@@ -163,6 +168,10 @@ void ViewRenderingFlutterBinding::addRenderView(std::shared_ptr<RenderView> &vie
     viewIdToRenderView_[id]=view;
 }
 
+void ViewRenderingFlutterBinding::scheduleFrame() {
+    ensureFrameCallbacksRegistered();
+}
+
 void ViewRenderingFlutterBinding::ensureFrameCallbacksRegistered() {
     std::shared_ptr<ViewRenderingFlutterBinding> ptr = shared_from_this();
     auto draw_frame = fml::MakeCopyable([ptr](){
@@ -180,6 +189,7 @@ void Helloworld() {
     std::shared_ptr<RenderParagraph> renderParagraph = std::make_shared<RenderParagraph>(text, TextDirection::ltr);
     std::shared_ptr<RenderPositionedBox> renderPositionedBox = std::make_shared<RenderPositionedBox>(renderParagraph);
     std::shared_ptr<ViewRenderingFlutterBinding> view = std::make_shared<ViewRenderingFlutterBinding>(renderPositionedBox);
+    view->scheduleFrame();
 }
 
 }
