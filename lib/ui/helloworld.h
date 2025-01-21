@@ -58,6 +58,7 @@ public:
     TextPainter(std::shared_ptr<InlineSpan> &text, TextDirection textDirection);
     void layout(double minWidth, double maxWidth);
     const std::u16string& plainText() const {return text_->toPlainText();} 
+    void paint(fml::RefPtr<flutter::Canvas> canvas, Offset & offset);
 private:
     ParagraphStyle _createParagraphStyle(const std::optional<TextAlign> &textAlignOverride=std::nullopt);
     fml::RefPtr<flutter::Paragraph> _createParagraph(std::shared_ptr<InlineSpan> &text);

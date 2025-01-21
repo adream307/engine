@@ -72,6 +72,10 @@ fml::RefPtr<flutter::Paragraph> TextPainter::_createParagraph(std::shared_ptr<In
     return builder->build2();
 }
 
+void TextPainter::paint(fml::RefPtr<flutter::Canvas> canvas, Offset & offset) {
+
+}
+
 
 void PaintingContext::repaintCompositedChild(std::shared_ptr<RenderObject> &child) {
     auto childContex = PaintingContext{};
@@ -125,7 +129,8 @@ void RenderParagraph::_layoutTextWithConstraints(BoxConstraints constraints) {
 }
 
 void RenderParagraph::paint(PaintingContext &context, Offset &offset) {
-
+    auto canvas = context.getCanvas();
+    textPainter_.paint(canvas, offset);
 }
 
 RenderPositionedBox::RenderPositionedBox(std::shared_ptr<RenderObject> child) {
