@@ -105,6 +105,8 @@ public:
     fml::RefPtr<flutter::Canvas> getCanvas();
 private:
     fml::RefPtr<flutter::Canvas> canvas_ = nullptr;
+    fml::RefPtr<flutter::PictureRecorder> recorder_ = nullptr;
+    fml::RefPtr<flutter::Picture> picture_ = nullptr; 
 };
 
 class BoxConstraints{

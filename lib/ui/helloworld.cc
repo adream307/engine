@@ -100,25 +100,27 @@ void PaintingContext::repaintCompositedChild(std::shared_ptr<RenderObject> &chil
     auto childContex = PaintingContext{};
     Offset zero(0.0,0.0);
     child->paint(childContex, zero);
+
 }
 
 void PaintingContext::paintChild(std::shared_ptr<RenderObject>& child, Offset &offset) {
     child->paint(*this, offset);
+    picture_ = recorder_->endRecording2();
 }
 
 fml::RefPtr<flutter::Canvas> PaintingContext::getCanvas() {
     if(canvas_) {
         return canvas_;
     }
-    fml::RefPtr<flutter::PictureRecorder> recorder = fml::MakeRefCounted<flutter::PictureRecorder>();
+    recorder_ = fml::MakeRefCounted<flutter::PictureRecorder>();
     auto rect = Rect::largest();
 
-    canvas_ = fml::MakeRefCounted<flutter::Canvas>(recorder->BeginRecording(
+    canvas_ = fml::MakeRefCounted<flutter::Canvas>(recorder_->BeginRecording(
                  SkRect::MakeLTRB(flutter::SafeNarrow(rect.left), 
                                   flutter::SafeNarrow(rect.top), 
                                   flutter::SafeNarrow(rect.right),
                                   flutter::SafeNarrow(rect.bottom))));
-    recorder->set_canvas(canvas_);
+    recorder_->set_canvas(canvas_);
     return canvas_;
 }
 
