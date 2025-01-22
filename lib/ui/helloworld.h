@@ -151,12 +151,13 @@ public:
     Size size() const {return size_;}
     virtual void paint(PaintingContext &context, Offset &offset){context.paintChild(child_,offset);}
     void scheduleInitialLayout();
-    void scheduleInitialPaint(); //TODO flutter/packages/flutter/lib/src/rendering/object.dart, RenderObject.void scheduleInitialPaint(ContainerLayer rootLayer)
+    void scheduleInitialPaint(TransformLayer &layer);
 protected:
     BoxConstraints constraints_;
     std::shared_ptr<PipelineOwner> owner_;
     std::shared_ptr<RenderObject> child_;
     Size size_;
+    TransformLayer rootLayer_;
 };
 
 class RenderParagraph : public RenderObject{

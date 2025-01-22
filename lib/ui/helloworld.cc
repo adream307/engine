@@ -128,7 +128,8 @@ void RenderObject::scheduleInitialLayout() {
     owner_->nodesNeedingLayout.push_back(shared_from_this());
 }
 
-void RenderObject::scheduleInitialPaint() {
+void RenderObject::scheduleInitialPaint(TransformLayer &layer) {
+    rootLayer_ = layer;
     owner_->nodesNeedingPaint.push_back(shared_from_this());
 }
 
@@ -187,7 +188,7 @@ void RenderView::performLayout() {
 void RenderView::prepareInitialFrame() {
     scheduleInitialLayout();
     auto layer = _updateMatricesAndCreateNewRootLayer();
-    scheduleInitialPaint();
+    scheduleInitialPaint(layer);
 }
 
 TransformLayer RenderView::_updateMatricesAndCreateNewRootLayer() {
