@@ -68,9 +68,7 @@ double TextPainter::_computePaintOffsetFraction(TextAlign textAlign, TextDirecti
 }
 
 Size TextPainter::size() const {
-    auto s = Size(width(), height());
-    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", size = " << s.width << "," << s.height << std::endl;
-    return s;
+    return Size(width(), height());
 }
 
 ParagraphStyle TextPainter::_createParagraphStyle(const std::optional<TextAlign> &textAlignOverride)
@@ -137,12 +135,14 @@ void RenderObject::layout(const BoxConstraints &constraints) {
 }
 
 RenderParagraph::RenderParagraph(std::shared_ptr<InlineSpan> &text, TextDirection textDirection)
-    :textPainter_(text,textDirection),size_(0.0,0.0) {
+    :textPainter_(text,textDirection) {
 }
 
 void RenderParagraph::performLayout() {
     _layoutTextWithConstraints(constraints_.loosen());
     size_ = textPainter_.size();
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", RenderParagraph::performLayout::size = " << size_.width << "-" << size_.height << std::endl;
+
 }
 
 void RenderParagraph::_layoutTextWithConstraints(BoxConstraints constraints) {
@@ -160,6 +160,8 @@ RenderPositionedBox::RenderPositionedBox(std::shared_ptr<RenderObject> child) {
 
 void RenderPositionedBox::performLayout() {
     child_->layout(constraints_.loosen());
+    size_ = Size(constraints_.maxWidth, constraints_.maxHeight);
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", RenderParagraph::performLayout::size = " << size_.width << "-" << size_.height << std::endl;
 }
 
 void RenderPositionedBox::paint(PaintingContext &context, Offset &offset)

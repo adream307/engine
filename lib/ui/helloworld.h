@@ -138,6 +138,7 @@ public:
     void attach(std::shared_ptr<PipelineOwner> &owner) {owner_=owner;}
     void setChild(std::shared_ptr<RenderObject> child) {child_ = child;}
     std::shared_ptr<RenderObject>& child() {return child_;}
+    Size size() const {return size_;}
     virtual void paint(PaintingContext &context, Offset &offset){context.paintChild(child_,offset);}
     void scheduleInitialLayout();
     void scheduleInitialPaint(); //TODO flutter/packages/flutter/lib/src/rendering/object.dart, RenderObject.void scheduleInitialPaint(ContainerLayer rootLayer)
@@ -145,6 +146,7 @@ protected:
     BoxConstraints constraints_;
     std::shared_ptr<PipelineOwner> owner_;
     std::shared_ptr<RenderObject> child_;
+    Size size_;
 };
 
 class RenderParagraph : public RenderObject{
@@ -152,11 +154,9 @@ public:
     RenderParagraph(std::shared_ptr<InlineSpan> &text, TextDirection textDirection);
     void performLayout() override;
     void paint(PaintingContext &context, Offset &offset) override;
-    Size size() const {return size_;}
 private:
     void _layoutTextWithConstraints(BoxConstraints constraints);
     TextPainter textPainter_;
-    Size size_;
 };
 
 class RenderPositionedBox : public RenderObject{

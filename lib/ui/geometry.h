@@ -4,7 +4,7 @@
 namespace keels{
 
 struct Size{
-    Size(double w, double h): width(w), height(h){}
+    Size(double w=0.0, double h=0.0): width(w), height(h){}
     double width;
     double height;
 };
