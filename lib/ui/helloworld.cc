@@ -186,6 +186,12 @@ void RenderView::performLayout() {
 
 void RenderView::prepareInitialFrame() {
     scheduleInitialLayout();
+    rootTransform_ = SkM44(
+            flutter::SafeNarrow(configuration.devicePixelRatio), flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(0.0), flutter::SafeNarrow(0.0),
+            flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(configuration.devicePixelRatio), flutter::SafeNarrow(0.0), flutter::SafeNarrow(0.0),
+            flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(1.0), flutter::SafeNarrow(0.0),
+            flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(0.0), flutter::SafeNarrow(1.0)
+    );
     scheduleInitialPaint();
 }
 

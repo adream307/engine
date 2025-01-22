@@ -130,10 +130,6 @@ public:
     double devicePixelRatio;
 };
 
-struct TransformLayer{
-    tonic::Float64List transform;
-};
-
 class RenderObject : public std::enable_shared_from_this<RenderObject>{
 public:
     RenderObject()=default;
@@ -182,6 +178,7 @@ public:
     void paint(PaintingContext &context, Offset &offset) override;
     void compositeFrame();
 private:
+    SkM44 rootTransform_;
     std::shared_ptr<FlutterView> view_;
 };
 
