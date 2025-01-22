@@ -161,12 +161,18 @@ RenderPositionedBox::RenderPositionedBox(std::shared_ptr<RenderObject> child) {
 void RenderPositionedBox::performLayout() {
     child_->layout(constraints_.loosen());
     size_ = Size(constraints_.maxWidth, constraints_.maxHeight);
-    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", RenderParagraph::performLayout::size = " << size_.width << "-" << size_.height << std::endl;
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", RenderPositionedBox::performLayout::size = " << size_.width << "-" << size_.height << std::endl;
 }
 
 void RenderPositionedBox::paint(PaintingContext &context, Offset &offset)
 {
-    context.paintChild(child_,offset);
+    auto cs = child_->size();
+    double dx = size_.width - cs.width;
+    double dy = size_.height - cs.height;
+    Offset o(dx/2.0+offset.dx,dy/2.0+offset.dy);
+    context.paintChild(child_, offset);
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", RenderPositionedBox::paint::offset = " << o.dx  << "-" << o.dy << std::endl;
+
 }
 
 RenderView::RenderView(std::shared_ptr<FlutterView> &view):view_(view)
