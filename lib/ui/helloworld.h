@@ -135,6 +135,7 @@ public:
     TransformLayer()=default;
     TransformLayer(const SkM44 &t):transform(t){}
     SkM44 transform;
+    std::shared_ptr<RenderObject> owner;
 };
 
 class RenderObject : public std::enable_shared_from_this<RenderObject>{

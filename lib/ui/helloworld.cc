@@ -186,6 +186,7 @@ void RenderView::performLayout() {
 
 void RenderView::prepareInitialFrame() {
     scheduleInitialLayout();
+    auto layer = _updateMatricesAndCreateNewRootLayer();
     scheduleInitialPaint();
 }
 
@@ -196,7 +197,9 @@ TransformLayer RenderView::_updateMatricesAndCreateNewRootLayer() {
             flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(1.0), flutter::SafeNarrow(0.0),
             flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(0.0), flutter::SafeNarrow(1.0)
     );
-    return TransformLayer(rootTransform_);
+    auto rootLayer = TransformLayer(rootTransform_);
+    rootLayer.owner = shared_from_this();
+    return rootLayer;
 }
 
 void RenderView::paint(PaintingContext &context, Offset &offset)
