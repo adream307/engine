@@ -41,6 +41,22 @@ SceneBuilder::SceneBuilder() {
 
 SceneBuilder::~SceneBuilder() = default;
 
+fml::RefPtr<EngineLayer> SceneBuilder::pushTransform2(tonic::Float64List& matrix4,
+                     const fml::RefPtr<EngineLayer>& oldLayer) {
+  SkM44 sk_matrix = ToSkM44(matrix4);
+  auto layer = std::make_shared<flutter::TransformLayer>(sk_matrix);
+  PushLayer(layer);
+  // matrix4 has to be released before we can return another Dart object
+  matrix4.Release();
+  auto engine_layer = fml::MakeRefCounted<EngineLayer>(layer);
+
+  if (oldLayer && oldLayer->Layer()) {
+    layer->AssignOldLayer(oldLayer->Layer().get());
+  }
+  std::cout << __FILE__ << ":" <<__LINE__ << ":" << std::this_thread::get_id() << ",SceneBuilder::pushTransform2" << std::endl;
+  return engine_layer;
+}
+
 void SceneBuilder::pushTransform(Dart_Handle layer_handle,
                                  tonic::Float64List& matrix4,
                                  const fml::RefPtr<EngineLayer>& oldLayer) {

@@ -130,6 +130,10 @@ public:
     double devicePixelRatio;
 };
 
+struct TransformLayer{
+    tonic::Float64List transform;
+};
+
 class RenderObject : public std::enable_shared_from_this<RenderObject>{
 public:
     RenderObject()=default;
