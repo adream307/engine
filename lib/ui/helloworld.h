@@ -176,6 +176,7 @@ public:
     void prepareInitialFrame();
     ViewConfiguration configuration;
     void paint(PaintingContext &context, Offset &offset) override;
+    void compositeFrame();
 private:
     std::shared_ptr<FlutterView> view_;
 };

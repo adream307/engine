@@ -194,6 +194,12 @@ void RenderView::paint(PaintingContext &context, Offset &offset)
     context.paintChild(child_,offset);
 }
 
+void RenderView::compositeFrame() {
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",RenderView::compositeFrame::SceneBuilder" << std::endl;
+    fml::RefPtr<flutter::SceneBuilder> sceneBuilder = fml::MakeRefCounted<flutter::SceneBuilder>();
+}
+
+
 void PipelineOwner::flushLayout() {
     for(auto & node : nodesNeedingLayout) {
         node->_layoutWithoutResize();
@@ -269,6 +275,9 @@ void ViewRenderingFlutterBinding::ensureFrameCallbacksRegistered() {
 void ViewRenderingFlutterBinding::handleDrawFrame() {
     rootPipelineOwner_->flushLayout();
     rootPipelineOwner_->flushPaint();
+    for(auto & view : viewIdToRenderView_) {
+        view.second->compositeFrame();
+    }
 }
 
 void Helloworld() {
