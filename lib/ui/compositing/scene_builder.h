@@ -44,7 +44,7 @@ class SceneBuilder : public RefCountedDartWrappable<SceneBuilder> {
   }
 
   fml::RefPtr<EngineLayer> pushTransform2(const SkM44 &sk_matrix,
-                     const fml::RefPtr<EngineLayer>& oldLayer);
+                     const fml::RefPtr<EngineLayer>& oldLayer=nullptr);
 
   void pushTransform(Dart_Handle layer_handle,
                      tonic::Float64List& matrix4,

@@ -215,6 +215,7 @@ void RenderView::paint(PaintingContext &context, Offset &offset)
 void RenderView::compositeFrame() {
     std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",RenderView::compositeFrame::SceneBuilder" << std::endl;
     fml::RefPtr<flutter::SceneBuilder> sceneBuilder = fml::MakeRefCounted<flutter::SceneBuilder>();
+    auto scene = rootLayer_.buildScene(sceneBuilder);
 }
 
 
