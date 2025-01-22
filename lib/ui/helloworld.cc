@@ -40,13 +40,13 @@ void TextPainter::layout(double minWidth, double maxWidth)
     auto paragraph = _createParagraph(text_);
     paragraph->layout(layoutMaxWidth);
 
-    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", layout with width = " << layoutMaxWidth << std::endl;
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", TextPainter::layout, width = " << layoutMaxWidth << std::endl;
     
     TextLayout layout(paragraph, textDirection_, plainText());
     double contentWidth = layout._contentWidthFor(minWidth, maxWidth);
     layoutCache_ = std::make_shared<TextPainterLayoutCacheWithOffset>(layout,0.0,layoutMaxWidth,contentWidth);
 
-    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", content width = " << contentWidth << std::endl;
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", TextPainter::layout content width = " << contentWidth << std::endl;
 
     //TODO: flutter/packages/flutter/lib/src/painting/text_painter.dart: 1192
 }
@@ -91,7 +91,8 @@ fml::RefPtr<flutter::Paragraph> TextPainter::_createParagraph(std::shared_ptr<In
 }
 
 void TextPainter::paint(fml::RefPtr<flutter::Canvas> canvas, Offset & offset) {
-
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", TextPainter::paint::offset = " << offset.dx  << "-" << offset.dy << std::endl;
+    layoutCache_->layout.paragraph->paint(canvas.get(), offset.dx, offset.dy);
 }
 
 
@@ -170,9 +171,7 @@ void RenderPositionedBox::paint(PaintingContext &context, Offset &offset)
     double dx = size_.width - cs.width;
     double dy = size_.height - cs.height;
     Offset o(dx/2.0+offset.dx,dy/2.0+offset.dy);
-    context.paintChild(child_, offset);
-    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", RenderPositionedBox::paint::offset = " << o.dx  << "-" << o.dy << std::endl;
-
+    context.paintChild(child_, o);
 }
 
 RenderView::RenderView(std::shared_ptr<FlutterView> &view):view_(view)
