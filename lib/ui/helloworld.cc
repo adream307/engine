@@ -186,13 +186,17 @@ void RenderView::performLayout() {
 
 void RenderView::prepareInitialFrame() {
     scheduleInitialLayout();
+    scheduleInitialPaint();
+}
+
+TransformLayer RenderView::_updateMatricesAndCreateNewRootLayer() {
     rootTransform_ = SkM44(
             flutter::SafeNarrow(configuration.devicePixelRatio), flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(0.0), flutter::SafeNarrow(0.0),
             flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(configuration.devicePixelRatio), flutter::SafeNarrow(0.0), flutter::SafeNarrow(0.0),
             flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(1.0), flutter::SafeNarrow(0.0),
             flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(0.0),                            flutter::SafeNarrow(0.0), flutter::SafeNarrow(1.0)
     );
-    scheduleInitialPaint();
+    return TransformLayer(rootTransform_);
 }
 
 void RenderView::paint(PaintingContext &context, Offset &offset)

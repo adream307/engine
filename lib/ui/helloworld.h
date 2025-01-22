@@ -130,6 +130,13 @@ public:
     double devicePixelRatio;
 };
 
+class TransformLayer{
+public:
+    TransformLayer()=default;
+    TransformLayer(const SkM44 &t):transform(t){}
+    SkM44 transform;
+};
+
 class RenderObject : public std::enable_shared_from_this<RenderObject>{
 public:
     RenderObject()=default;
@@ -177,6 +184,8 @@ public:
     ViewConfiguration configuration;
     void paint(PaintingContext &context, Offset &offset) override;
     void compositeFrame();
+private:
+    TransformLayer _updateMatricesAndCreateNewRootLayer();
 private:
     SkM44 rootTransform_;
     std::shared_ptr<FlutterView> view_;
