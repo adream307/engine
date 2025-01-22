@@ -100,12 +100,12 @@ void PaintingContext::repaintCompositedChild(std::shared_ptr<RenderObject> &chil
     auto childContex = PaintingContext{};
     Offset zero(0.0,0.0);
     child->paint(childContex, zero);
-
+    childContex.picture_ = childContex.recorder_->endRecording2();
+    child->rootLayer().picture = childContex.picture_;
 }
 
 void PaintingContext::paintChild(std::shared_ptr<RenderObject>& child, Offset &offset) {
     child->paint(*this, offset);
-    picture_ = recorder_->endRecording2();
 }
 
 fml::RefPtr<flutter::Canvas> PaintingContext::getCanvas() {
@@ -221,6 +221,7 @@ void RenderView::compositeFrame() {
     std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ",RenderView::compositeFrame::SceneBuilder" << std::endl;
     fml::RefPtr<flutter::SceneBuilder> sceneBuilder = fml::MakeRefCounted<flutter::SceneBuilder>();
     auto scene = rootLayer_.buildScene(sceneBuilder);
+    view_->render(scene);
 }
 
 

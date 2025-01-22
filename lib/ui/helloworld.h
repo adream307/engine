@@ -155,6 +155,7 @@ public:
     virtual void paint(PaintingContext &context, Offset &offset){context.paintChild(child_,offset);}
     void scheduleInitialLayout();
     void scheduleInitialPaint(TransformLayer &layer);
+    TransformLayer& rootLayer() {return rootLayer_;}
 protected:
     BoxConstraints constraints_;
     std::shared_ptr<PipelineOwner> owner_;
