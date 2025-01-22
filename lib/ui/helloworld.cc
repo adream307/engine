@@ -137,11 +137,12 @@ void RenderObject::layout(const BoxConstraints &constraints) {
 }
 
 RenderParagraph::RenderParagraph(std::shared_ptr<InlineSpan> &text, TextDirection textDirection)
-    :textPainter_(text,textDirection) {
+    :textPainter_(text,textDirection),size_(0.0,0.0) {
 }
 
 void RenderParagraph::performLayout() {
     _layoutTextWithConstraints(constraints_.loosen());
+    size_ = textPainter_.size();
 }
 
 void RenderParagraph::_layoutTextWithConstraints(BoxConstraints constraints) {

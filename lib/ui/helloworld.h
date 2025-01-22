@@ -152,10 +152,11 @@ public:
     RenderParagraph(std::shared_ptr<InlineSpan> &text, TextDirection textDirection);
     void performLayout() override;
     void paint(PaintingContext &context, Offset &offset) override;
-
+    Size size() const {return size_;}
 private:
     void _layoutTextWithConstraints(BoxConstraints constraints);
     TextPainter textPainter_;
+    Size size_;
 };
 
 class RenderPositionedBox : public RenderObject{
