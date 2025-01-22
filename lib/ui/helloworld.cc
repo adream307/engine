@@ -124,6 +124,10 @@ fml::RefPtr<flutter::Canvas> PaintingContext::getCanvas() {
     return canvas_;
 }
 
+fml::RefPtr<flutter::Scene> TransformLayer::buildScene(fml::RefPtr<flutter::SceneBuilder> builder){
+    return nullptr;
+}
+
 void RenderObject::scheduleInitialLayout() {
     owner_->nodesNeedingLayout.push_back(shared_from_this());
 }

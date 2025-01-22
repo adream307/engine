@@ -134,6 +134,7 @@ class TransformLayer{
 public:
     TransformLayer()=default;
     TransformLayer(const SkM44 &t):transform(t){}
+    fml::RefPtr<flutter::Scene> buildScene(fml::RefPtr<flutter::SceneBuilder> builder);
     SkM44 transform;
     std::shared_ptr<RenderObject> owner;
 };
