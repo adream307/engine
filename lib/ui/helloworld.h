@@ -53,12 +53,37 @@ public:
                                      const TextScaler &textScaler);
 };
 
+struct TextLayout{
+    TextLayout(const fml::RefPtr<flutter::Paragraph> &p,
+               const TextDirection &w,
+               const std::u16string &r): paragraph(p),writingDirection(w),rawString(r) {}
+    double maxIntrinsicLineExtent() const {return paragraph->maxIntrinsicWidth();}
+    double _contentWidthFor(double minWidth, double maxWidth);
+
+    fml::RefPtr<flutter::Paragraph> paragraph;
+    TextDirection writingDirection;
+    std::u16string rawString;
+};
+
+struct TextPainterLayoutCacheWithOffset{
+    TextPainterLayoutCacheWithOffset(const TextLayout&tl, double ta, double lm, double co):
+        layout(tl), textAlignment(ta),layoutMaxWidth(lm), contentWidth(co){}
+    Offset paintOffset() {return Offset(0.0,0.0);}
+    TextLayout layout;
+    double textAlignment;
+    double layoutMaxWidth;
+    double contentWidth;
+};
+
 class TextPainter {
 public:
     TextPainter(std::shared_ptr<InlineSpan> &text, TextDirection textDirection);
     void layout(double minWidth, double maxWidth);
     const std::u16string& plainText() const {return text_->toPlainText();} 
     void paint(fml::RefPtr<flutter::Canvas> canvas, Offset & offset);
+    double width() const {return layoutCache_->contentWidth;}
+    double height() const {return layoutCache_->layout.paragraph->height();}
+    Size size() const;
 private:
     ParagraphStyle _createParagraphStyle(const std::optional<TextAlign> &textAlignOverride=std::nullopt);
     fml::RefPtr<flutter::Paragraph> _createParagraph(std::shared_ptr<InlineSpan> &text);
@@ -69,6 +94,7 @@ private:
     TextScaler textScaler_;
     std::shared_ptr<InlineSpan> text_;
     bool rebuildParagraphForPaint_;
+    std::shared_ptr<TextPainterLayoutCacheWithOffset> layoutCache_;
 };
 
 
@@ -136,6 +162,7 @@ class RenderPositionedBox : public RenderObject{
 public:
     RenderPositionedBox(std::shared_ptr<RenderObject> child);
     void performLayout() override;
+    void paint(PaintingContext &context, Offset &offset) override;
 };
 
 class RenderView : public RenderObject{
@@ -145,6 +172,7 @@ public:
     std::shared_ptr<FlutterView>& flutterView() {return view_;}
     void prepareInitialFrame();
     ViewConfiguration configuration;
+    void paint(PaintingContext &context, Offset &offset) override;
 private:
     std::shared_ptr<FlutterView> view_;
 };

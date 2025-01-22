@@ -18,22 +18,36 @@ ParagraphStyle TextStyle::getParagraphStyle(const TextAlign &textAlign,
     return ParagraphStyle(textAlign, textDirection, textScaler.scale(kDefaultFontSize));
 }
 
+
+double TextLayout::_contentWidthFor(double minWidth, double maxWidth) {
+    double x =maxIntrinsicLineExtent();
+    if(x<minWidth) return minWidth;
+    if(x>maxWidth) return maxWidth;
+    return x;
+}
+
 TextPainter::TextPainter(std::shared_ptr<InlineSpan>& text, TextDirection textDirection):
     textAlign_(TextAlign::start),
     textDirection_(textDirection),
     textScaler_(TextScaler::LinearTextScaler(1.0)),
     text_(text)
 {
-
 }
-
 
 void TextPainter::layout(double minWidth, double maxWidth)
 {
     double layoutMaxWidth = maxWidth;
     auto paragraph = _createParagraph(text_);
     paragraph->layout(layoutMaxWidth);
+
     std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", layout with width = " << layoutMaxWidth << std::endl;
+    
+    TextLayout layout(paragraph, textDirection_, plainText());
+    double contentWidth = layout._contentWidthFor(minWidth, maxWidth);
+    layoutCache_ = std::make_shared<TextPainterLayoutCacheWithOffset>(layout,0.0,layoutMaxWidth,contentWidth);
+
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", content width = " << contentWidth << std::endl;
+
     //TODO: flutter/packages/flutter/lib/src/painting/text_painter.dart: 1192
 }
 
@@ -51,6 +65,12 @@ double TextPainter::_computePaintOffsetFraction(TextAlign textAlign, TextDirecti
         else if (textDirection==TextDirection::rtl) return 0.0;
     }
     return 0.0;
+}
+
+Size TextPainter::size() const {
+    auto s = Size(width(), height());
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::this_thread::get_id() << ", size = " << s.width << "," << s.height << std::endl;
+    return s;
 }
 
 ParagraphStyle TextPainter::_createParagraphStyle(const std::optional<TextAlign> &textAlignOverride)
@@ -141,6 +161,11 @@ void RenderPositionedBox::performLayout() {
     child_->layout(constraints_.loosen());
 }
 
+void RenderPositionedBox::paint(PaintingContext &context, Offset &offset)
+{
+    context.paintChild(child_,offset);
+}
+
 RenderView::RenderView(std::shared_ptr<FlutterView> &view):view_(view)
 {
 }
@@ -152,6 +177,11 @@ void RenderView::performLayout() {
 void RenderView::prepareInitialFrame() {
     scheduleInitialLayout();
     scheduleInitialPaint();
+}
+
+void RenderView::paint(PaintingContext &context, Offset &offset)
+{
+    context.paintChild(child_,offset);
 }
 
 void PipelineOwner::flushLayout() {
