@@ -103,6 +103,7 @@ public:
     static void repaintCompositedChild(std::shared_ptr<RenderObject> &child);
     void paintChild(std::shared_ptr<RenderObject>& child, Offset &offset);
     fml::RefPtr<flutter::Canvas> getCanvas();
+    fml::RefPtr<flutter::Picture> picture() {return picture_;}
 private:
     fml::RefPtr<flutter::Canvas> canvas_ = nullptr;
     fml::RefPtr<flutter::PictureRecorder> recorder_ = nullptr;
@@ -137,6 +138,7 @@ public:
     fml::RefPtr<flutter::Scene> buildScene(fml::RefPtr<flutter::SceneBuilder> builder);
     SkM44 transform;
     std::shared_ptr<RenderObject> owner;
+    fml::RefPtr<flutter::Picture> picture;
 };
 
 class RenderObject : public std::enable_shared_from_this<RenderObject>{

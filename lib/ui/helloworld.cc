@@ -126,7 +126,10 @@ fml::RefPtr<flutter::Canvas> PaintingContext::getCanvas() {
 
 fml::RefPtr<flutter::Scene> TransformLayer::buildScene(fml::RefPtr<flutter::SceneBuilder> builder){
     auto engineLayer = builder->pushTransform2(transform);
-    return nullptr;
+    builder->addPicture(0.0, 0.0, picture.get(), 0);
+    builder->pop();
+    auto scene = builder->build2();
+    return scene;
 }
 
 void RenderObject::scheduleInitialLayout() {
@@ -211,6 +214,7 @@ TransformLayer RenderView::_updateMatricesAndCreateNewRootLayer() {
 void RenderView::paint(PaintingContext &context, Offset &offset)
 {
     context.paintChild(child_,offset);
+    rootLayer_.picture = context.picture();
 }
 
 void RenderView::compositeFrame() {
