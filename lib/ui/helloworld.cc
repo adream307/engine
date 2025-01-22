@@ -125,6 +125,7 @@ fml::RefPtr<flutter::Canvas> PaintingContext::getCanvas() {
 }
 
 fml::RefPtr<flutter::Scene> TransformLayer::buildScene(fml::RefPtr<flutter::SceneBuilder> builder){
+    auto engineLayer = builder->pushTransform2(transform);
     return nullptr;
 }
 
